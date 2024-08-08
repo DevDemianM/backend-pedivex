@@ -1,7 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const productionOrders = require('./productionOrders')
 
-const RequestDetail = sequelize.define('RequestDetail', {
+const requestDetails = sequelize.define('requestDetails', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -33,8 +34,8 @@ const RequestDetail = sequelize.define('RequestDetail', {
     allowNull: false
   }
 }, {
-  tableName: 'requestDetail',
+  tableName: 'requestDetails',
   timestamps: false
 });
 
-module.exports = RequestDetail;
+module.exports = requestDetails;

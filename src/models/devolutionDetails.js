@@ -3,7 +3,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const products = require('./products');
 const devolutions = require('./devolutions');
-const devolutionMotives = require('./devolutionsMotives');
+const devolutionMotives = require('./devolutionMotives');
 
 const devolutionDetails = sequelize.define('devolutionDetails', {
   id: {
