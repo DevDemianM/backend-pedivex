@@ -1,4 +1,4 @@
-const Sale = require('../models/sale');
+const Sale = require('../models/sales');
 
 class SaleService {
     async createSale(saleData) {

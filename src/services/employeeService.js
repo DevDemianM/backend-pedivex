@@ -1,5 +1,5 @@
 // src/services/employeeService.js
-const Employee = require('../models/employee');
+const Employee = require('../models/employees');
 
 class EmployeeService {
   async registerEmployee(data) {

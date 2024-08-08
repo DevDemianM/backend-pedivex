@@ -1,3 +1,5 @@
+const DevolutionsRepository = require('../repositories/devolutionsRepository');
+
 const { models } = require('../models');
 
 const getAllDevolutions = async () => {
@@ -28,7 +30,6 @@ const createDevolucionEmpaquetadoRoto = async (data) => {
   return await models.Devolutions.create(data);
 };
 
-
 const updateDevolutions = async (id, data) => {
   return await models.Devolutions.update(data, {
     where: { id }
@@ -52,4 +53,3 @@ module.exports = {
   createDevolucionProductoVencido,
   createDevolucionEmpaquetadoRoto
 };
-

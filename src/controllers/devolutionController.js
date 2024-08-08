@@ -1,6 +1,6 @@
-const devolutionsService = require('../services/devolutionsService');
+const devolutionsService = require('../services/devolutionService');
 const { sendResponse, sendError } = require('../utils/response');
-const devolutionsDetails = require('../models/devolutionsDetails');
+const devolutionsDetails = require('../models/devolutionDetails');
 const devolutions = require('../models/devolutions');
 const products = require('../models/products');
 const sequelize = require('../config/database');

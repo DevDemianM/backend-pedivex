@@ -1,5 +1,5 @@
 // src/repositories/clientRepository.js
-const Client = require('../models/client');
+const Client = require('../models/clients');
 
 class ClientRepository {
   async createClient(clientData) {
