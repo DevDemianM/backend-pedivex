@@ -14,7 +14,8 @@ const permissions = sequelize.define('permissions', {
     unique: true
   }
 }, {
-  tableName: 'permissions'
+  tableName: 'permissions',
+  timestamps: false
 });
 
 module.exports = permissions;

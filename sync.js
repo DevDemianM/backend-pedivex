@@ -1,40 +1,45 @@
 const sequelize = require('./src/config/database');
 const {
-  Permissions,
-  Roles,
-  Users,
-  Employees,
-  Clients,
-  ProductionOrders,
-  ProductionOrderDetails,
-  Products,
-  ProductCategories,
-  Requests,
-  RequestDetails,
-  Datasheets,
-  DatasheetDetails,
-  Masses,
-  MassDetails,
-  Supplies,
-  Boughts,
-  BoughtDetails,
-  Providers,
-  Sales,
-  SaleDetails,
-  Devolutions,
-  DevolutionDetails,
-  DevolutionMotives,
-  RolePermissions
+  User,
+  Employee,
+  Client,
+  Role,
+  Permission,
+  RolPermission,
+  ProductionOrder,
+  ProductionOrderDetail,
+  Product,
+  ProductCategory,
+  Request,
+  RequestDetail,
+  Datasheet,
+  DatasheetDetail,
+  Mass,
+  MassDetail,
+  Supply,
+  Bought,
+  BoughtDetail,
+  Provider,
+  Sale,
+  SaleDetail,
+  Devolution,
+  DevolutionDetail,
+  DevolutionMotive,
+  connectDb
 } = require('./src/models'); // Asegúrate de ajustar la ruta según tu estructura de directorios
 
 async function syncDatabase() {
   try {
     await sequelize.authenticate();
-    console.log('Se conecto bien exoticamente');
+    console.log('Se conectó a la base de datos');
 
     // Sincroniza todos los modelos
-    await sequelize.sync({ force: true }); // O usa { alter: true } para actualizar las tablas sin borrarlas
-    console.log('Los modelos se crearon melos');
+    // {force: true } es para crear las tablas y eliminar las existentes
+    // {alter: true } es para actualizar las tablas sin borrarlas, puede generar error si no estan bien sincronizados los modelos
+    await sequelize.sync({ force: true });
+    // await sequelize.sync({ alter: true });
+
+    console.log('Se sincronizaron los modelos');
   } catch (error) {
     console.error('No se pudo crear los modelos, paila, mire aver si entiende: ', error);
   } finally {
@@ -42,4 +47,4 @@ async function syncDatabase() {
   }
 }
 
-syncDatabase();
+syncDatabase(); 

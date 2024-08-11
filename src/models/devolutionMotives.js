@@ -13,7 +13,7 @@ const devolutionMotives = sequelize.define('devolutionMotives', {
     allowNull: false,
   }
 }, {
-  tableName: 'devolutionDetails',
+  tableName: 'devolutionMotives',
   timestamps: false,
 });
 

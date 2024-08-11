@@ -14,7 +14,7 @@ const providers = sequelize.define('providers', {
         unique: true
     }
 }, {
-  tableName: 'clients',
+  tableName: 'providers',
   timestamps: false,
 });
 

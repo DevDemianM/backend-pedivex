@@ -43,7 +43,7 @@ const boughtDetails = sequelize.define('boughtDetails', {
     allowNull: false
   },
 }, {
-  tableName: 'clients',
+  tableName: 'boughtDetails',
   timestamps: false,
 });
 

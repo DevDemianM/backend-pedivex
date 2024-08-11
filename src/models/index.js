@@ -29,6 +29,7 @@ const DevolutionMotive = require('./devolutionMotives');
 
 // Definición de relaciones
 
+
 // Relación entre permission y roles a través de rol_permission
 Role.belongsToMany(Permission, { through: RolPermission, foreignKey: 'idRol' });
 Permission.belongsToMany(Role, { through: RolPermission, foreignKey: 'idPermission' });
@@ -129,6 +130,7 @@ DevolutionDetail.belongsTo(Devolution, { foreignKey: 'idDevolution' });
 DevolutionMotive.hasOne(DevolutionDetail, { foreignKey: 'idMotive' });
 DevolutionDetail.belongsTo(DevolutionMotive, { foreignKey: 'idMotive' });
 
+
 const connectDb = async () => {
   try {
       await db.sync({ alter: true }); // Sincroniza la base de datos y recrea las tablas
@@ -137,6 +139,7 @@ const connectDb = async () => {
       console.error('Error al sincronizar bd ->', error);
   }
 };
+
 
 module.exports = {
   User,
