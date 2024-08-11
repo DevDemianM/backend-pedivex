@@ -2,19 +2,19 @@
 const { models } = require('../models');
 
 const getAllOrderDetail = async () => {
-    return await models.OrderDetail.findAll();
+    return await models.ProductionOrder.findAll();
 };
 
 const getOrderDetailById = async (id) => {
-    return await models.OrderDetail.findByPk(id);
+    return await models.ProductionOrder.findByPk(id);
 };
 
 const createOrderDetail = async (data) => {
-    return await models.OrderDetail.create(data);
+    return await models.ProductionOrder.create(data);
 };
 
 const updateOrderDetail = async (id, data) => {
-    return await models.OrderDetail.update(data, {
+    return await models.ProductionOrder.update(data, {
         where: {
             orderDetailId: id
         }
@@ -22,7 +22,7 @@ const updateOrderDetail = async (id, data) => {
 };
 
 const deleteOrderDetail = async (id) => {
-    return await models.OrderDetail.destroy({
+    return await models.ProductionOrder.destroy({
         where: {
             orderDetailId: id
         }

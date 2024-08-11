@@ -140,8 +140,7 @@ const connectDb = async () => {
   }
 };
 
-
-module.exports = {
+const models = {
   User,
   Employee,
   Client,
@@ -167,5 +166,10 @@ module.exports = {
   Devolution,
   DevolutionDetail,
   DevolutionMotive,
+}
+
+
+module.exports = {
+  models,
   connectDb
 };

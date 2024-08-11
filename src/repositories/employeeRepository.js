@@ -1,5 +1,5 @@
 // src/repositories/employeeRepository.js
-const Employee = require('../models/employee');
+const Employee = require('../models/employees');
 
 class EmployeeRepository {
   async createEmployee(employeeData) {

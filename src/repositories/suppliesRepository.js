@@ -1,25 +1,25 @@
 const { models } = require('../models');
 
 const getAllSupplies = async () => {
-    return await models.Supplies.findAll();
+    return await models.Supply.findAll();
 };
 
 const getSuppliesById = async (id) => {
-    return await models.Supplies.findByPk(id);
+    return await models.Supply.findByPk(id);
 };
 
 const createSupplies = async (data) => {
-    return await models.Supplies.create(data);
+    return await models.Supply.create(data);
 };
 
 const updateSupplies = async (id, data) => {
-    return await models.Supplies.update(data, {
+    return await models.Supply.update(data, {
         where: { id }
     });
 };
 
 const deleteSupplies = async (id) => {
-    return await models.Supplies.destroy({
+    return await models.Supply.destroy({
         where: { id }
     });
 };

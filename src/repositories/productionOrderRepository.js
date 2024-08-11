@@ -3,13 +3,13 @@ const { models } = require('../models');
 
 const getAllProductionOrder = async () => {
     return await models.ProductionOrder.findAll({
-        include: [models.OrderDetail]
+        include: [models.ProductionOrderDetail]
     });
 };
 
 const getProductionOrderById = async (id) => {
     return await models.ProductionOrder.findByPk(id, {
-        include: [models.OrderDetail]
+        include: [models.ProductionOrderDetail]
     });
 };
 
