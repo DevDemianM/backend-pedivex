@@ -7,11 +7,11 @@ const { employeeValidationRules, validate } = require('../middlewares/employeeVa
 const router = express.Router();
 
 // Define tus rutas
-router.post('/employees', employeeValidationRules(), validate, employeeController.registerEmployee);
-router.get('/employees/:id', employeeController.getEmployeeById);
-router.get('/employees', employeeController.getAllEmployees);
-router.put('/employees/:id', employeeValidationRules(), validate, employeeController.updateEmployee);
-router.delete('/employees/:id', employeeController.deleteEmployee);
+router.post('/', employeeValidationRules(), validate, employeeController.registerEmployee);
+router.get('/:id', employeeController.getEmployeeById);
+router.get('/', employeeController.getAllEmployees);
+router.put('/:id', employeeValidationRules(), validate, employeeController.updateEmployee);
+router.delete('/:id', employeeController.deleteEmployee);
 
 // Exportar el router
 module.exports = router;
