@@ -2,7 +2,7 @@ const { models } = require('../models');
 
 const getAllUsers = async () => {
     return await models.User.findAll({
-        include: [models.roles]
+        include: [models.Role]
     });
 };
 
