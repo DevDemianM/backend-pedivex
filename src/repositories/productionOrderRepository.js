@@ -1,10 +1,9 @@
-
+const sequelize = require('../config/database');
 const { models } = require('../models');
-const productionOrderDetails = require('../models/productionOrderDetails');
 
 const getAllProductionOrder = async () => {
     return await models.ProductionOrder.findAll({
-        include: [models.ProductionOrderDetail]
+        include: [models.ProductionOrderDetail],
     });
 };
 
@@ -14,26 +13,38 @@ const getProductionOrderById = async (id) => {
     });
 };
 
-/*
 const createProductionOrder = async (data) => {
-    return await models.ProductionOrder.create(data);
+    const transaction = await sequelize.transaction();
+    try {
+        const { date, notes, idEmployee, status, targetDate, details } = data;
+
+        // Crea la orden de producción
+        const productionOrder = await models.ProductionOrder.create({
+            date,
+            notes,
+            idEmployee,
+            status,
+            targetDate
+        }, { transaction });
+
+        // Crea los detalles de la orden de producción
+        const productionOrderDetails = details.map(detail => ({
+            ...detail,
+            productionOrderId: productionOrder.id
+        }));
+        await models.ProductionOrderDetail.bulkCreate(productionOrderDetails, { transaction });
+
+        // Confirma la transacción
+        await transaction.commit();
+
+        return { success: true, productionOrder };
+    } catch (error) {
+        // Revertir la transacción en caso de error
+        await transaction.rollback();
+        console.error('Error al crear orden de producción y detalles:', error);
+        return { success: false, error };
+    }
 };
-*/
-const createProductionOrder = async (data) => {
-    const orders = await orders.create(data, {
-      include: [
-        {
-          model: productionOrderDetails,
-          include: [
-            {
-              model: productionOrderDetails
-            },
-          ]
-        }
-      ]
-    });
-    return orders;
-  }
 
 const updateProductionOrder = async (id, data) => {
     return await models.ProductionOrder.update(data, {
@@ -58,4 +69,3 @@ module.exports = {
     updateProductionOrder,
     deleteProductionOrder
 };
-
