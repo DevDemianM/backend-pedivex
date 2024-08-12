@@ -136,7 +136,7 @@ const connectDb = async () => {
       await db.sync({ alter: true }); // Sincroniza la base de datos y recrea las tablas
       console.log('BD sincronizada');
   } catch (error) {
-      console.error('Error al sincronizar bd ->', error);
+      console.error('Error al sincronizar BD ->', error);
   }
 };
 

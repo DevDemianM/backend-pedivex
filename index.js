@@ -51,14 +51,14 @@ app.use('/user', userRoutes);
 const port = process.env.SERVER_PORT || 3000;
 
 const startServer = async () => {
-    try {
-        await connectDb();
-        app.listen(port, () => {
-            console.log(`Server is running on port ${port}`);
-        });
-    } catch (error) {
-        console.error('Error starting the server:', error);
-    }
+  try {
+    await connectDb();
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  } catch (error) {
+    console.error('Error starting the server:', error);
+  }
 };
 
 startServer();
