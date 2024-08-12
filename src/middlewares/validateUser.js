@@ -1,8 +1,8 @@
 const { body, validationResult } = require('express-validator');
 
 const validateUser = [
-    body('email')
-        .notEmpty().withMessage('Email is required')
+    body('mail')
+        .notEmpty().withMessage('Mail is required')
         .isEmail().withMessage('Invalid email format'),
     body('password')
         .notEmpty().withMessage('Password is required')

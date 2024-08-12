@@ -1,5 +1,6 @@
 
 const { models } = require('../models');
+const productionOrderDetails = require('../models/productionOrderDetails');
 
 const getAllProductionOrder = async () => {
     return await models.ProductionOrder.findAll({
@@ -13,9 +14,26 @@ const getProductionOrderById = async (id) => {
     });
 };
 
+/*
 const createProductionOrder = async (data) => {
     return await models.ProductionOrder.create(data);
 };
+*/
+const createProductionOrder = async (data) => {
+    const orders = await orders.create(data, {
+      include: [
+        {
+          model: productionOrderDetails,
+          include: [
+            {
+              model: productionOrderDetails
+            },
+          ]
+        }
+      ]
+    });
+    return orders;
+  }
 
 const updateProductionOrder = async (id, data) => {
     return await models.ProductionOrder.update(data, {
