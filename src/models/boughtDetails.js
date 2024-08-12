@@ -23,8 +23,7 @@ const boughtDetails = sequelize.define('boughtDetails', {
   },
   amount: {
     type: DataTypes.FLOAT,
-    allowNull: false,
-    unique: true
+    allowNull: false
   },
   unit: {
     type: DataTypes.STRING,
