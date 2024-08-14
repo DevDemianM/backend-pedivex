@@ -19,17 +19,13 @@ const createRequest = async (data) => {
 
 const updateRequest = async (id, data) => {
     return await models.Request.update(data, {
-        where: {
-            requestId: id
-        }
+        where: { id }
     });
 };
 
 const deleteRequest = async (id) => {
     return await models.Request.destroy({
-        where: {
-            requestId: id
-        }
+        where: { id }
     });
 };
 

@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const productionOrders = require('./productionOrders')
+const productionOrders = require('./productionOrders');
+const requests = require('./requests');
 
 const requestDetails = sequelize.define('requestDetails', {
   id: {
@@ -9,11 +10,15 @@ const requestDetails = sequelize.define('requestDetails', {
     allowNull: false,
     autoIncrement: true
   },
-  requestId: {
+  idRequest: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
+    references: {
+      model: requests,
+      key: 'id'
+    },
   },
-  productId: {
+  idProduct: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
