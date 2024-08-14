@@ -20,6 +20,7 @@ const roleRoutes = require('./src/routes/roleRoutes');
 // const saleRoutes = require('./src/routes/saleRoutes');
 const suppliesRoutes = require('./src/routes/suppliesRoutes');
 const userRoutes = require('./src/routes/userRoutes');
+const motiveDevolutions = require('./src/routes/motiveDevolutionsRoutes');
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use('/role', roleRoutes);
 // app.use('/sale', saleRoutes);
 app.use('/supplies', suppliesRoutes);
 app.use('/user', userRoutes);
+app.use('/motiveDevolutions', motiveDevolutions);
 
 const port = process.env.SERVER_PORT || 3000;
 
