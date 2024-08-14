@@ -3,7 +3,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 const products = require('./products');
 const devolutions = require('./devolutions');
-const devolutionMotives = require('./devolutionMotives');
+const motiveDevolutions = require('./devolutionMotives');
 
 const devolutionDetails = sequelize.define('devolutionDetails', {
   id: {
@@ -27,11 +27,11 @@ const devolutionDetails = sequelize.define('devolutionDetails', {
       min: 0,
     },
   },
-  motive: {
+  idMotive: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: devolutionMotives,
+      model: motiveDevolutions,
       key: 'id',
     },
   },

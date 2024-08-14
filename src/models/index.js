@@ -25,7 +25,7 @@ const Sale = require('./sales');
 const SaleDetail = require('./saleDetails');
 const Devolution = require('./devolutions');
 const DevolutionDetail = require('./devolutionDetails');
-const DevolutionMotive = require('./devolutionMotives');
+const MotiveDevolution = require('./motiveDevolutions');
 
 // Definición de relaciones
 
@@ -127,8 +127,8 @@ Devolution.hasMany(DevolutionDetail, { foreignKey: 'idDevolution' });
 DevolutionDetail.belongsTo(Devolution, { foreignKey: 'idDevolution' });
 
 // Relación entre devolutionMotives y devolutionDetails
-DevolutionMotive.hasOne(DevolutionDetail, { foreignKey: 'idMotive' });
-DevolutionDetail.belongsTo(DevolutionMotive, { foreignKey: 'idMotive' });
+MotiveDevolution.hasOne(DevolutionDetail, { foreignKey: 'idMotive' });
+DevolutionDetail.belongsTo(MotiveDevolution, { foreignKey: 'idMotive' });
 
 
 const connectDb = async () => {
@@ -165,7 +165,7 @@ const models = {
   SaleDetail,
   Devolution,
   DevolutionDetail,
-  DevolutionMotive,
+  MotiveDevolution,
 }
 
 

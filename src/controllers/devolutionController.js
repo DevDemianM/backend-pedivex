@@ -1,12 +1,5 @@
 const devolutionsService = require('../services/devolutionService');
 const { sendResponse, sendError } = require('../utils/response');
-const devolutionsDetails = require('../models/devolutionDetails');
-const devolutions = require('../models/devolutions');
-const products = require('../models/products');
-const sequelize = require('../config/database');
-const sale = sequelize.models.sale;
-const saleDetail = sequelize.models.saleDetail;
-const moment = require('moment');
 
 const getAllDevolutions = async (req, res) => {
     try {
@@ -18,40 +11,11 @@ const getAllDevolutions = async (req, res) => {
 };
 
 const createDevolutions = async (req, res) => {
-    const transaction = await sequelize.transaction();
-
     try {
-        const { devolutionData, devolutionDetailsData } = req.body;
-        const { voucher, client, date, quantityProducts, state, idSale } = devolutionData;
-
-        const saleRecord = await sale.findByPk(idSale);
-        if (!saleRecord) {
-            throw new Error('idSale no existe en la tabla sale');
-        }
-
-        const newDevolution = await devolutions.create({
-            voucher,
-            client,
-            date,
-            quantityProducts,
-            state,
-            idSale
-        }, { transaction });
-
-        for (const detail of devolutionDetailsData) {
-            await devolutionsDetails.create({
-                idProduct: detail.idProduct,
-                quantity: detail.quantity,
-                motive: detail.motive,
-                idDevolution: newDevolution.id
-            }, { transaction });
-        }
-
-        await transaction.commit();
-        res.status(201).json({ newDevolution, details: devolutionDetailsData });
+        const devolutions = await boughtService.createDevolutions(req.body);
+        sendResponse(res, devolutions, 201);
     } catch (error) {
-        await transaction.rollback();
-        res.status(400).json({ error: error.message });
+        sendError(res, error);
     }
 };
 
@@ -127,6 +91,8 @@ const createDevolucionCambioSabor = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+
 
 const createDevolucionMalEstado = async (req, res) => {
     const transaction = await sequelize.transaction();
