@@ -17,7 +17,7 @@ const createDevolucionCambioSabor = async (data) => {
   const transaction = await sequelize.transaction();
 
     try {
-        const { idSale, idProductoActual, idProductoNuevo, cantidad, cliente, fecha } = data;
+        const { idSale, idProductoActual, idProductoNuevo, cantidad, idUser, fecha } = data;
 
         const saleRecord = await models.Sale.findByPk(idSale);
         if (!saleRecord) {
@@ -45,7 +45,7 @@ const createDevolucionCambioSabor = async (data) => {
 
         const nuevaDevolucion = await models.Devolution.create({
             voucher: `DEV-${Date.now()}`,
-            client: cliente,
+            idUser: idUser,
             date: fecha,
             quantityProducts: cantidad,
             state: 1, // Asegúrate de usar el valor adecuado para el estado
@@ -90,7 +90,7 @@ const createDevolucionMalEstado = async (data) => {
   const transaction = await sequelize.transaction();
 
   try {
-      const { idSale, idProducto, cantidad, cliente, fecha, fechaVencimiento } = data;
+      const { idSale, idProducto, cantidad, idUser, fecha, fechaVencimiento } = data;
 
       // Verificar si la fecha de vencimiento es válida
       if (!moment(fechaVencimiento).isValid() || moment(fechaVencimiento).isBefore(moment().startOf('day'))) {
@@ -123,7 +123,7 @@ const createDevolucionMalEstado = async (data) => {
 
       const nuevaDevolucion = await models.Devolution.create({
           voucher: `DEV-${Date.now()}`,
-          client: cliente,
+          idUser: idUser,
           date: fecha,
           quantityProducts: cantidad,
           state: 1, // Cambiar si es necesario
@@ -156,7 +156,7 @@ const createDevolucionProductoVencido = async (data) => {
   const transaction = await sequelize.transaction();
 
   try {
-      const { idSale, idProducto, cantidad, cliente, fecha, comprobanteCompra, fechaVencimiento } = data;
+      const { idSale, idProducto, cantidad, idUser, fecha, comprobanteCompra, fechaVencimiento } = data;
 
       // Verificar si la fecha de vencimiento está vencida por menos de 24 horas
       const fechaVencimientoMoment = moment(fechaVencimiento);
@@ -191,7 +191,7 @@ const createDevolucionProductoVencido = async (data) => {
 
       const nuevaDevolucion = await models.Devolution.create({
           voucher: comprobanteCompra || `DEV-${Date.now()}`, // Usa el comprobante de compra si está disponible
-          client: cliente,
+          idUser: idUser,
           date: fecha,
           quantityProducts: cantidad,
           state: 1, // Cambiar si es necesario
@@ -224,7 +224,7 @@ const createDevolucionEmpaquetadoRoto = async (data) => {
   const transaction = await sequelize.transaction();
 
   try {
-      const { idSale, idProducto, cantidad, cliente, fecha, motivo } = data;
+      const { idSale, idProducto, cantidad, idUser, fecha, motivo } = data;
 
       const saleRecord = await models.Sale.findByPk(idSale);
       if (!saleRecord) {
@@ -252,7 +252,7 @@ const createDevolucionEmpaquetadoRoto = async (data) => {
 
       const nuevaDevolucion = await models.Devolution.create({
           voucher: `DEV-${Date.now()}`,
-          client: cliente,
+          idUser: idUser,
           date: fecha,
           quantityProducts: cantidad,
           state: 1, // Cambiar si es necesario
