@@ -96,21 +96,21 @@ BoughtDetail.belongsTo(Bought, { foreignKey: 'idBought' });
 Provider.hasOne(Bought, { foreignKey: 'idProvider' });
 Bought.belongsTo(Provider, { foreignKey: 'idProvider' });
 
-// // Relación entre sales y saleDetails
-// Sale.hasMany(SaleDetail, { foreignKey: 'idSale' });
-// SaleDetail.belongsTo(Sale, { foreignKey: 'idSale' });
+// Relación entre sales y saleDetails
+Sale.hasMany(SaleDetail, { foreignKey: 'idSale' });
+SaleDetail.belongsTo(Sale, { foreignKey: 'idSale' });
 
 // Relación entre products y saleDetails
 Product.hasOne(SaleDetail, { foreignKey: 'idProduct' });
 SaleDetail.belongsTo(Product, { foreignKey: 'idProduct' });
 
-// // Relación entre users y sales
-// User.hasMany(Sale, { foreignKey: 'idUser' });
-// Sale.belongsTo(User, { foreignKey: 'idUSer' });
+// Relación entre users y sales
+User.hasMany(Sale, { foreignKey: 'idUser' });
+Sale.belongsTo(User, { foreignKey: 'idUser' });
 
-// // Relación entre sales y devolutions
-// Sale.hasOne(Devolution, { foreignKey: 'idSale' });
-// Devolution.belongsTo(Sale, { foreignKey: 'idSale' });
+// Relación entre sales y devolutions
+Sale.hasOne(Devolution, { foreignKey: 'idSale' });
+Devolution.belongsTo(Sale, { foreignKey: 'idSale' });
 
 // Relación entre devolutions y devolutionDetails
 Devolution.hasMany(DevolutionDetail, { foreignKey: 'idDevolution' });
