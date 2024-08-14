@@ -1,8 +1,6 @@
 const sequelize = require('./src/config/database');
 const {
   User,
-  Employee,
-  Client,
   Role,
   Permission,
   RolPermission,
@@ -35,12 +33,12 @@ async function syncDatabase() {
 
     // Sincroniza todos los modelos
 
-    // {force: true } es para crear las tablas y eliminar las existentes
-    // {alter: true } es para actualizar las tablas sin borrarlas, puede generar error si no estan bien sincronizados los modelos
+     {force: true } //es para crear las tablas y eliminar las existentes
+     {alter: true } //es para actualizar las tablas sin borrarlas, puede generar error si no estan bien sincronizados los modelos
 
     await sequelize.sync({ force: true });
 
-    // await sequelize.sync({ alter: true });
+    await sequelize.sync({ alter: true });
 
     console.log('Se sincronizaron los modelos');
   } catch (error) {

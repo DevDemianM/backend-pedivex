@@ -19,6 +19,27 @@ const users = sequelize.define('users', {
     allowNull: false,
     unique: true
   },
+  firstName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  document: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  address: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  phoneNumber: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   idRole: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -26,7 +47,7 @@ const users = sequelize.define('users', {
       model: roles,
       key: 'id'
     },
-  }
+  },
 }, {
   tableName: 'users'
 });

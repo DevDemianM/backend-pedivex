@@ -22,7 +22,7 @@ const createProductionOrder = async (data) => {
         const productionOrder = await models.ProductionOrder.create({
             date,
             notes,
-            idEmployee,
+            idUser,
             status,
             targetDate
         }, { transaction });

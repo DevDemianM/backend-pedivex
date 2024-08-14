@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const clients = require('./clients');
+const users = require('./users');
 
 const requests = sequelize.define('requests', {
   id: {
@@ -13,11 +13,11 @@ const requests = sequelize.define('requests', {
     type: DataTypes.DATE,
     allowNull: false
   },
-  idClient: {
+  idUser: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: clients,
+      model: users,
       key: 'id'
     },
   },

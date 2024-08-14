@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const employees = require('./employees');
+const users = require('./users');
 
 const productionOrders = sequelize.define('productionOrders', {
   id: {
@@ -17,11 +17,11 @@ const productionOrders = sequelize.define('productionOrders', {
     type: DataTypes.STRING(400),
     allowNull: true
   },
-  idEmployee: {
+  idUser: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-        model: employees,  
+        model: users,  
         key: 'id'        
     },
   },

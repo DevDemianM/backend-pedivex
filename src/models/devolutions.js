@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const clients = require('./clients');
 const sales = require('./sales');
+const users = require('./users');
 
 const devolutions = sequelize.define('devolutions', {
   id: {
@@ -14,11 +14,11 @@ const devolutions = sequelize.define('devolutions', {
     type: DataTypes.INTEGER,
     unique: true,
   },
-  idClient: {
+  idUser: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: clients ,
+      model: users ,
       key: 'id',
     },
   },

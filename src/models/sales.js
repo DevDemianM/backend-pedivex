@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const clients = require('./clients');
+const users = require('./users');
 
 const sales = sequelize.define('sales', {
   id: {
@@ -13,22 +13,22 @@ const sales = sequelize.define('sales', {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  idClient: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: clients,
-      key: 'id',
-    },
-  },
   total: {
     type: DataTypes.DECIMAL,
     allowNull: false,
-  }, 
+  },
   state: {
     type: DataTypes.INTEGER,
     allowNull: false,
-  }
+  },
+  idUser: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: users,
+      key: 'id'
+    },
+  },
 }, {
   tableName: 'sales',
   timestamps: false,

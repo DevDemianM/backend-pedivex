@@ -2,8 +2,6 @@ const { Sequelize } = require('sequelize');
 const db = require('../config/database');
 
 const User = require('./users');
-const Employee = require('./employees');
-const Client = require('./clients');
 const Role = require('./roles');
 const Permission = require('./permissions');
 const RolPermission = require('./rolePermission');
@@ -38,17 +36,9 @@ Permission.belongsToMany(Role, { through: RolPermission, foreignKey: 'idPermissi
 Role.hasMany(User, { foreignKey: 'idRol' });
 User.belongsTo(Role, { foreignKey: 'idRol' });
 
-// Relación entre users y employees
-User.hasOne(Employee, { foreignKey: 'idUser' });
-Employee.belongsTo(User, { foreignKey: 'idUser' });
-
-// Relación entre users y clients
-User.hasOne(Client, { foreignKey: 'idUser' });
-Client.belongsTo(User, { foreignKey: 'idUser' });
-
-// Relación entre employees y productionOrders
-Employee.hasMany(ProductionOrder, { foreignKey: 'idEmployee' });
-ProductionOrder.belongsTo(Employee, { foreignKey: 'idEmployee' });
+// Relación entre users y productionOrders
+User.hasMany(ProductionOrder, { foreignKey: 'idUser' });
+ProductionOrder.belongsTo(User, { foreignKey: 'idUser' });
 
 // Relación entre productionOrders y productionOrderDetails
 ProductionOrder.hasMany(ProductionOrderDetail, { foreignKey: 'idProductionOrder' });
@@ -58,9 +48,9 @@ ProductionOrderDetail.belongsTo(ProductionOrder, { foreignKey: 'idProductionOrde
 Product.hasOne(ProductionOrderDetail, { foreignKey: 'idProduct' });
 ProductionOrderDetail.belongsTo(Product, { foreignKey: 'idProduct' });
 
-// Relación entre clients y requests
-Client.hasMany(Request, { foreignKey: 'idClient' });
-Request.belongsTo(Client, { foreignKey: 'idClient' });
+// Relación entre users y requests
+User.hasMany(Request, { foreignKey: 'idUser' });
+Request.belongsTo(User, { foreignKey: 'idUser' });
 
 // Relación entre requests y requestDetails
 Request.hasMany(RequestDetail, { foreignKey: 'idRequest' });
@@ -106,21 +96,21 @@ BoughtDetail.belongsTo(Bought, { foreignKey: 'idBought' });
 Provider.hasOne(Bought, { foreignKey: 'idProvider' });
 Bought.belongsTo(Provider, { foreignKey: 'idProvider' });
 
-// Relación entre sales y saleDetails
-Sale.hasMany(SaleDetail, { foreignKey: 'idSale' });
-SaleDetail.belongsTo(Sale, { foreignKey: 'idSale' });
+// // Relación entre sales y saleDetails
+// Sale.hasMany(SaleDetail, { foreignKey: 'idSale' });
+// SaleDetail.belongsTo(Sale, { foreignKey: 'idSale' });
 
 // Relación entre products y saleDetails
 Product.hasOne(SaleDetail, { foreignKey: 'idProduct' });
 SaleDetail.belongsTo(Product, { foreignKey: 'idProduct' });
 
-// Relación entre clients y sales
-Client.hasMany(Sale, { foreignKey: 'idClient' });
-Sale.belongsTo(Client, { foreignKey: 'idClient' });
+// // Relación entre users y sales
+// User.hasMany(Sale, { foreignKey: 'idUser' });
+// Sale.belongsTo(User, { foreignKey: 'idUSer' });
 
-// Relación entre sales y devolutions
-Sale.hasOne(Devolution, { foreignKey: 'idSale' });
-Devolution.belongsTo(Sale, { foreignKey: 'idSale' });
+// // Relación entre sales y devolutions
+// Sale.hasOne(Devolution, { foreignKey: 'idSale' });
+// Devolution.belongsTo(Sale, { foreignKey: 'idSale' });
 
 // Relación entre devolutions y devolutionDetails
 Devolution.hasMany(DevolutionDetail, { foreignKey: 'idDevolution' });
@@ -142,8 +132,6 @@ const connectDb = async () => {
 
 const models = {
   User,
-  Employee,
-  Client,
   Role,
   Permission,
   RolPermission,
