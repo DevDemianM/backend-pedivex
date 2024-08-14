@@ -1,9 +1,8 @@
 const { body, validationResult } = require('express-validator');
 
 const validateBought = [
-    body('idProvider')
-        .isInt({ min: 1 }).withMessage('IdProvider must be a positive integer')
-        .notEmpty().withMessage('IdProvider is required'),
+    body('providerName')
+        .notEmpty().withMessage('provider name is required'),
 
     body('nroReceipt')
         .notEmpty().withMessage('NroReceipt is required')

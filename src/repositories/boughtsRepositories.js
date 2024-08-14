@@ -3,7 +3,14 @@ const { models } = require('../models');
 
 const getAllBoughts = async () => {
     return await models.Bought.findAll({
-        include: [models.BoughtDetail],
+        include: [
+            {
+                model: models.BoughtDetail
+            },
+            {
+                model: models.Provider
+            }
+        ],
     });
 };
 
@@ -16,7 +23,23 @@ const getBoughtById = async (id) => {
 const createBought = async (data) => {
     const transaction = await sequelize.transaction();
     try {
-        const { nroReceipt, date, total, state, idProvider, details } = data;
+        const { nroReceipt, date, total, state, details, providerName } = data;
+
+        // Verificar si el proveedor ya existe
+        let provider = await models.Provider.findOne({
+            where: { provider: providerName },
+            transaction
+        });
+
+        // Crear el proveedor si no existe
+        if (!provider) {
+            provider = await models.Provider.create({
+                provider: providerName
+            }, { transaction });
+        }
+
+        // Usa el ID del proveedor existente o recién creado
+        const idProvider = provider.id;
 
         // Crea la compra
         const bought = await models.Bought.create({
