@@ -16,7 +16,7 @@ const getProductionOrderById = async (id) => {
 const createProductionOrder = async (data) => {
     const transaction = await sequelize.transaction();
     try {
-        const { date, notes, idEmployee, status, targetDate, details } = data;
+        const { date, notes, idUser, status, targetDate, details } = data;
 
         // Crea la orden de producción
         const productionOrder = await models.ProductionOrder.create({
@@ -48,17 +48,13 @@ const createProductionOrder = async (data) => {
 
 const updateProductionOrder = async (id, data) => {
     return await models.ProductionOrder.update(data, {
-        where: {
-            orderId: id
-        }
+        where: { id }
     });
 };
 
 const deleteProductionOrder = async (id) => {
     return await models.ProductionOrder.destroy({
-        where: {
-            orderId: id
-        }
+        where: { id }
     });
 };
 

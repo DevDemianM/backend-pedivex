@@ -17,7 +17,7 @@ const requestDetailRoutes = require('./src/routes/requestDetailRoutes');
 const requestRoutes = require('./src/routes/requestRoutes');
 const rolePermissionRoutes = require('./src/routes/rolePermissionRoutes');
 const roleRoutes = require('./src/routes/roleRoutes');
-// const saleRoutes = require('./src/routes/saleRoutes');
+const saleRoutes = require('./src/routes/saleRoutes');
 const suppliesRoutes = require('./src/routes/suppliesRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 
@@ -40,8 +40,8 @@ app.use('/requestDetail', requestDetailRoutes);
 app.use('/request', requestRoutes);
 app.use('/rolePermission', rolePermissionRoutes);
 app.use('/role', roleRoutes);
-// app.use('/sale', saleRoutes);
-app.use('/supplies', suppliesRoutes);
+app.use('/sale', saleRoutes);
+app.use('/supplie', suppliesRoutes);
 app.use('/user', userRoutes);
 
 const port = process.env.SERVER_PORT || 3000;

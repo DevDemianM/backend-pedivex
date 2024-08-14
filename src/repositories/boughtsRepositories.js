@@ -16,7 +16,14 @@ const getAllBoughts = async () => {
 
 const getBoughtById = async (id) => {
     return await models.Bought.findByPk(id, {
-        include: [models.BoughtDetail]
+        include: [
+            {
+                model: models.BoughtDetail
+            },
+            {
+                model: models.Provider
+            }
+        ]
     });
 };
 
@@ -68,6 +75,8 @@ const createBought = async (data) => {
         return { success: false, error };
     }
 };
+
+
 
 const updateBought = async (id, data) => {
     return await models.Bought.update(data, {
