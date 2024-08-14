@@ -3,41 +3,41 @@ const DevolutionsRepository = require('../repositories/devolutionsRepository');
 const { models } = require('../models');
 
 const getAllDevolutions = async () => {
-  return await models.Devolutions.findAll();
+  return await DevolutionsRepository.getAllDevolutions;
 };
 
 const getDevolutionsById = async (id) => {
-  return await models.Devolutions.findByPk(id);
+  return await DevolutionsRepository.getDevolutionsById;
 };
 
 const createDevolutions = async (data) => {
-  return await models.Devolutions.create(data);
+  return await DevolutionsRepository.createDevolutions;
 };
 
 const createDevolucionCambioSabor = async (data) => {
-  return await models.Devolutions.create(data);
+  return await DevolutionsRepository.createDevolucionCambioSabor;
 };
 
 const createDevolucionMalEstado = async (data) => {
-  return await models.Devolutions.create(data);
+  return await DevolutionsRepository.createDevolucionMalEstado;
 };
 
 const createDevolucionProductoVencido = async (data) => {
-  return await models.Devolutions.create(data);
+  return await DevolutionsRepository.createDevolucionProductoVencido;
 };
 
 const createDevolucionEmpaquetadoRoto = async (data) => {
-  return await models.Devolutions.create(data);
+  return await DevolutionsRepository.createDevolucionEmpaquetadoRoto;
 };
 
 const updateDevolutions = async (id, data) => {
-  return await models.Devolutions.update(data, {
+  return await DevolutionsRepository.updateDevolutions(data, {
     where: { id }
   });
 };
 
 const deleteDevolutions = async (id) => {
-  return await models.Devolutions.destroy({
+  return await DevolutionsRepository.deleteDevolutions({
     where: { id }
   });
 };
