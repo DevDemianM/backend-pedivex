@@ -25,7 +25,7 @@ const requests = sequelize.define('requests', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false
   },
-  status: {
+  state: {
     type: DataTypes.INTEGER,
     allowNull: false
   },
@@ -33,7 +33,7 @@ const requests = sequelize.define('requests', {
     type: DataTypes.DATE,
     allowNull: true
   },
-  statusDate: {
+  stateDate: {
     type: DataTypes.DATE,
     allowNull: true
   }
