@@ -8,7 +8,7 @@ class AuthService {
     }
 
     async login({ email, password }) {
-        const user = await User.findOne({ where: { email } });
+        const user = await User.findOne({ where: { mail } });
 
         if (!user || !(await user.validatePassword(password))) {
             throw new Error('Invalid email or password');

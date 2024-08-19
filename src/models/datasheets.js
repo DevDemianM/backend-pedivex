@@ -30,6 +30,7 @@ const datasheets = db.define('datasheets', {
         }
       },
     },
+    defaultValue: [null]
   },
 }, {
   tableName: 'datasheets',

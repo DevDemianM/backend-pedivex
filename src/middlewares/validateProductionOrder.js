@@ -4,7 +4,7 @@ const { body, validationResult } = require('express-validator');
 const validateProductionOrder = [
     body('date').isISO8601().withMessage('Date must be a valid ISO 8601 date'),
     body('notes').isLength({ max: 400 }).withMessage('Notes can have up to 400 characters'),
-    body('idEmployee').isInt().withMessage('Employee ID must be an integer'),
+    body('idUser').isInt().withMessage('Employee ID must be an integer'),
     body('state').isInt().withMessage('State must be an integer'),
     body('targetDate').optional().isISO8601().withMessage('Target date must be a valid ISO 8601 date'),
     (req, res, next) => {
