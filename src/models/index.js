@@ -29,12 +29,12 @@ const MotiveDevolution = require('./motiveDevolutions');
 
 
 // Relación entre permission y roles a través de rol_permission
-Role.belongsToMany(Permission, { through: RolPermission, foreignKey: 'idRol' });
+Role.belongsToMany(Permission, { through: RolPermission, foreignKey: 'idRole' });
 Permission.belongsToMany(Role, { through: RolPermission, foreignKey: 'idPermission' });
 
 // Relación entre roles y users
-Role.hasMany(User, { foreignKey: 'idRol' });
-User.belongsTo(Role, { foreignKey: 'idRol' });
+Role.hasMany(User, { foreignKey: 'idRole' });
+User.belongsTo(Role, { foreignKey: 'idRole' });
 
 // Relación entre users y productionOrders
 User.hasMany(ProductionOrder, { foreignKey: 'idUser' });
