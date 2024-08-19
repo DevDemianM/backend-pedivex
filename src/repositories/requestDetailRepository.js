@@ -15,17 +15,13 @@ const createRequestDetail = async (data) => {
 
 const updateRequestDetail = async (id, data) => {
     return await models.RequestDetail.update(data, {
-        where: {
-            requestDetailId: id
-        }
+        where: { id }
     });
 };
 
 const deleteRequestDetail = async (id) => {
     return await models.RequestDetail.destroy({
-        where: {
-            requestDetailId: id
-        }
+        where: { id }
     });
 };
 

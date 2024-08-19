@@ -16,21 +16,21 @@ const getProductionOrderById = async (id) => {
 const createProductionOrder = async (data) => {
     const transaction = await sequelize.transaction();
     try {
-        const { date, notes, idEmployee, status, targetDate, details } = data;
+        const { date, notes, idUser, state, targetDate, details } = data;
 
         // Crea la orden de producción
         const productionOrder = await models.ProductionOrder.create({
             date,
             notes,
             idUser,
-            status,
+            state,
             targetDate
         }, { transaction });
 
         // Crea los detalles de la orden de producción
         const productionOrderDetails = details.map(detail => ({
             ...detail,
-            productionOrderId: productionOrder.id
+            idProductionOrder: productionOrder.id
         }));
         await models.ProductionOrderDetail.bulkCreate(productionOrderDetails, { transaction });
 
@@ -48,17 +48,13 @@ const createProductionOrder = async (data) => {
 
 const updateProductionOrder = async (id, data) => {
     return await models.ProductionOrder.update(data, {
-        where: {
-            orderId: id
-        }
+        where: { id }
     });
 };
 
 const deleteProductionOrder = async (id) => {
     return await models.ProductionOrder.destroy({
-        where: {
-            orderId: id
-        }
+        where: { id }
     });
 };
 

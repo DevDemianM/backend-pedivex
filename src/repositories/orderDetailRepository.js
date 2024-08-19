@@ -15,17 +15,13 @@ const createOrderDetail = async (data) => {
 
 const updateOrderDetail = async (id, data) => {
     return await models.ProductionOrder.update(data, {
-        where: {
-            orderDetailId: id
-        }
+        where: { id }
     });
 };
 
 const deleteOrderDetail = async (id) => {
     return await models.ProductionOrder.destroy({
-        where: {
-            orderDetailId: id
-        }
+        where: { id }
     });
 };
 
