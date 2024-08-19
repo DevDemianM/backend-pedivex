@@ -152,7 +152,7 @@ const updateProduct = async (id, data) => {
     try {
       // en este caso solo se tiene que actualizar la tabla "products"
 
-      /// Se definen las variables con las que se actualizara la tabla products
+      //---// Se definen las variables con las que se actualizara la tabla products
 
       const name = data.name
       const stock = data.stock
