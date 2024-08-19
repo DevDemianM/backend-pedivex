@@ -1,5 +1,6 @@
 const sequelize = require('../config/database');
 const { models } = require('../models');
+const Joi = require('joi');
 
 const getAllBoughts = async () => {
     return await models.Bought.findAll({
@@ -32,6 +33,11 @@ const createBought = async (data) => {
     try {
         const { nroReceipt, date, total, state, details, providerName } = data;
 
+        const providerValidationErrors = validateProvider(providerName);
+        if (providerValidationErrors.length > 0) {
+            return { success: false, errors: providerValidationErrors };
+        }
+
         // Verificar si el proveedor ya existe
         let provider = await models.Provider.findOne({
             where: { provider: providerName },
@@ -56,6 +62,25 @@ const createBought = async (data) => {
             state,
             idProvider
         }, { transaction });
+
+        const validationErrors = [];
+        for (const detail of details) {
+            const errors = validateBoughtDetailsSchema(detail);
+            if (errors.length > 0) {
+                validationErrors.push({
+                    detail,
+                    errors
+                });
+            }
+        }
+
+        if (validationErrors.length > 0) {
+            // Revertir la transacción en caso de error
+            await transaction.rollback();
+
+            // Devolver los errores de validación
+            return { success: false, errors: validationErrors };
+        }
 
         // Crea los detalles de la compra
         const boughtDetails = details.map(detail => ({
@@ -88,6 +113,64 @@ const deleteBought = async (id) => {
     return await models.Bought.destroy({
         where: { id }
     });
+};
+
+const boughtDetailSchema = Joi.object({
+    supplieName: Joi.string().min(1).required().messages({
+        'string.empty': 'SupplieName is required',
+        'string.base': 'SupplieName must be a string',
+    }),
+    amount: Joi.number().positive().required().messages({
+        'number.base': 'Amount must be a number',
+        'number.positive': 'Amount must be greater than 0',
+        'any.required': 'Amount is required'
+    }),
+    unit: Joi.string().valid('gr', 'ml', 'unit').required().messages({
+        'string.valid': 'Unit must be one of the following: gr, lb, ml, unit',
+        'any.required': 'Unit is required'
+    }),
+    costUnit: Joi.number().min(0).required().messages({
+        'number.base': 'CostUnit must be a number',
+        'number.min': 'CostUnit must be a non-negative number',
+        'any.required': 'CostUnit is required'
+    }),
+    subtotal: Joi.number().min(0).required().messages({
+        'number.base': 'Subtotal must be a number',
+        'number.min': 'Subtotal must be a non-negative number',
+        'any.required': 'Subtotal is required'
+    }),
+    state: Joi.number().integer().min(1).max(5).required().messages({
+        'number.base': 'State must be an integer',
+        'number.min': 'State must be between 1 and 5',
+        'number.max': 'State must be between 1 and 5',
+        'any.required': 'State is required'
+    })
+});
+
+const validateBoughtDetailsSchema = (detail) => {
+    const { error } = boughtDetailSchema.validate(detail, { abortEarly: false });
+    if (error) {
+        return error.details.map(err => err.message);
+    }
+    return [];
+};
+
+const providerSchema = Joi.object({
+    provider: Joi.string().min(1).max(255).required().messages({
+        'string.base': 'Provider must be a string',
+        'string.empty': 'Provider is required',
+        'string.max': 'Provider must be less than 255 characters',
+        'string.pattern.base': 'Provider must contain at least one letter'
+    }).regex(/[a-zA-Z]/)
+});
+
+// Función de validación
+const validateProvider = (provider) => {
+    const { error } = providerSchema.validate({ provider }, { abortEarly: false });
+    if (error) {
+        return error.details.map(err => err.message);
+    }
+    return [];
 };
 
 module.exports = {
