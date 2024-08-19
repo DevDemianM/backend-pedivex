@@ -46,6 +46,7 @@ const createDatasheet = async (data) => {
       ...detail,
       idDatasheet: datasheet.id
     }));
+    
     await models.DatasheetDetail.bulkCreate(datasheetDetails, { transaction });
 
     await transaction.commit();

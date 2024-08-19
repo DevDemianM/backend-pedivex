@@ -159,5 +159,5 @@ const models = {
 
 module.exports = {
   models,
-  connectDb
+  connectDb
 };
