@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const { connectDb } = require('./src/models');
+const cors = require('cors');
+
 //Import Rutas
 const authRoutes = require('./src/routes/authRoutes');
 const boughtDetailRoutes = require('./src/routes/boughtDetailRoutes');
@@ -26,6 +28,7 @@ dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 app.use('/auth', authRoutes);
 app.use('/boughtDetail', boughtDetailRoutes);

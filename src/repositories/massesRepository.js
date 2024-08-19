@@ -2,13 +2,33 @@ const { models } = require('../models');
 
 const getAllMasses = async () => {
   return await models.Mass.findAll({
-    include: [models.MassDetail]
+    include: [
+      {
+        model: models.MassDetail,
+        include: [
+          {
+            model: models.Supply,
+            attributes: ['name']
+          }
+        ]
+      }
+    ]
   });
 }
 
 const getMassById = async (id) => {
   return await models.Mass.findByPk(id, {
-    include: [models.MassDetail]
+    include: [
+      {
+        model: models.BoughtDetail,
+        include: [
+          {
+            model: models.Supply,
+            attributes: ['name']
+          }
+        ]
+      }
+    ]
   });
 }
 
