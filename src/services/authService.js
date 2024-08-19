@@ -1,38 +1,50 @@
+const bcrypt = require('bcrypt'); //Bcrypt es para encriptar las contraseñas.
 const jwt = require('jsonwebtoken');
-const User = require('../models/users');
+const Users = require('../models/users');
+const { sendRecoveryEmail } = require('../services/emailService');
 
-class AuthService {
-    async register(data) {
-        const user = await User.create(data);
-        return user;
-    }
+const registerUser = async (userData) => {
+  const hashedPassword = await bcrypt.hash(userData.password, 10);
+  userData.password = hashedPassword;
+  const user = await Users.create(userData);
+  return user;
+};
 
-    async login({ email, password }) {
-        const user = await User.findOne({ where: { mail } });
+const loginUser = async (email, password) => {
+  const user = await Users.findOne({ where: { mail: email } });
+  if (!user || !await bcrypt.compare(password, user.password)) {
+    throw new Error('Email or password is incorrect');
+  }
 
-        if (!user || !(await user.validatePassword(password))) {
-            throw new Error('Invalid email or password');
-        }
+  const token = jwt.sign({ userId: user.id, role: user.idRole }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return token;
+};
 
-        const token = this.generateToken(user.id);
-        return token;
-    }
+// Recuperación de contraseña
+const initiatePasswordRecovery = async (email) => {
+  const user = await Users.findOne({ where: { mail: email } });
+  if (!user) {
+    throw new Error('No user found with this email');
+  }
 
-    generateToken(userId) {
-        return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    }
+  // Generar token
+  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  await sendRecoveryEmail(email, token);
+  return token;
+};
 
-    async recoverPassword(email) {
-        const user = await User.findOne({ where: { email } });
-        if (!user) {
-            throw new Error('User not found');
-        }
-        // Generar un token para recuperación de contraseña
-        const recoveryToken = this.generateToken(user.id); // Podrías enviar este token al email del usuario
-        user.passwordRecovery = recoveryToken; // Aquí se almacenaría en la base de datos
-        await user.save();
-        // Aquí deberías enviar un email al usuario con el link de recuperación
-    }
-}
+const resetPassword = async (token, newPassword) => {
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const user = await Users.findByPk(decoded.userId);
+  if (!user) {
+    throw new Error('Invalid token');
+  }
 
-module.exports = new AuthService();
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.password = hashedPassword;
+  await user.save();
+  
+  return user;
+};
+
+module.exports = { registerUser, loginUser, initiatePasswordRecovery, resetPassword };
