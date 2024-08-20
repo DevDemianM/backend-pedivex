@@ -1,54 +1,40 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const sales = require('./sales');
-const users = require('./users');
 
-const devolutions = sequelize.define('devolutions', {
+const Devolutions = sequelize.define('Devolutions', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     allowNull: false,
     autoIncrement: true
   },
-  voucher: {
-    type: DataTypes.INTEGER,
-    unique: true,
-  },
-  idUser: {
+  idSale: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: users ,
-      key: 'id',
-    },
+      model: 'sales',  // Referencia por nombre
+      key: 'id'
+    }
   },
   date: {
     type: DataTypes.DATE,
-    allowNull: false,
-  },
-  quantityProducts: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    validate: {
-      min: 1,
-    },
+    allowNull: false
   },
   state: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
-  idSale: {
+  idMotive: {
     type: DataTypes.INTEGER,
+    allowNull: false,
     references: {
-      model: sales,
-      key: 'id',
-    },
-  },
+      model: 'motiveDevolutions',  // Referencia por nombre
+      key: 'id'
+    }
+  }
 }, {
   tableName: 'devolutions',
   timestamps: false,
 });
 
-
-
-module.exports = devolutions;
+module.exports = Devolutions;

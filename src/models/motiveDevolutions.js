@@ -9,9 +9,13 @@ const motiveDevolutions = sequelize.define('motiveDevolutions', {
     autoIncrement: true
   },
   name: {
-    type: DataTypes.STRING(100),
+    type: DataTypes.STRING(200),
     allowNull: false,
     unique: true
+  },
+  actions: {
+    type: DataTypes.STRING(1000),
+    allowNull: false
   }
 }, {
   tableName: 'motiveDevolutions',

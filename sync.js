@@ -21,7 +21,6 @@ const {
   Sale,
   SaleDetail,
   Devolution,
-  DevolutionDetail,
   DevolutionMotive,
   connectDb
 } = require('./src/models');

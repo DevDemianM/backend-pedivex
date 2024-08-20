@@ -8,7 +8,6 @@ const cors = require('cors');
 const authRoutes = require('./src/routes/authRoutes');
 const boughtDetailRoutes = require('./src/routes/boughtDetailRoutes');
 const boughtRoutes = require('./src/routes/boughtRoutes');
-const devolutionsRoutes = require('./src/routes/devolutionRoutes');
 const orderDetailRoutes = require('./src/routes/orderDetailRoutes');
 const permissionRoutes = require('./src/routes/permissionRoutes');
 const productCategoriesRoutes = require('./src/routes/productCategoriesRoutes');
@@ -22,7 +21,6 @@ const roleRoutes = require('./src/routes/roleRoutes');
 const saleRoutes = require('./src/routes/saleRoutes');
 const suppliesRoutes = require('./src/routes/suppliesRoutes');
 const userRoutes = require('./src/routes/userRoutes');
-const motiveDevolutions = require('./src/routes/motiveDevolutionsRoutes');
 
 dotenv.config();
 
@@ -33,7 +31,6 @@ app.use(cors());
 app.use('/auth', authRoutes);
 app.use('/boughtDetail', boughtDetailRoutes);
 app.use('/bought', boughtRoutes);
-app.use('/devolution', devolutionsRoutes);
 app.use('/orderDetail', orderDetailRoutes);
 app.use('/permission', permissionRoutes);
 app.use('/productCategories', productCategoriesRoutes);
@@ -47,7 +44,6 @@ app.use('/role', roleRoutes);
 app.use('/sale', saleRoutes);
 app.use('/supplie', suppliesRoutes);
 app.use('/user', userRoutes);
-app.use('/motiveDevolutions', motiveDevolutions);
 
 const port = process.env.SERVER_PORT || 3000;
 
