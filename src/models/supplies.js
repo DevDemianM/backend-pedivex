@@ -23,9 +23,6 @@ const supplies = db.define('supplies', {
   unit: {
     type: DataTypes.STRING(5),
     allowNull: false,
-    validate: {
-      isIn: [['gr', 'ml', 'unit']],
-    },
   },
   state: {
     type: DataTypes.INTEGER,
