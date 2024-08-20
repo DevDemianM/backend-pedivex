@@ -13,9 +13,9 @@ const getAllDevolutions = async (req, res) => {
 const createDevolution = async (req, res) => {
   try {
     const devolution = await devolutionService.createDevolution(req.body);
-    sendResponse(res, devolution);
+    sendResponse(res, devolution, 201);
   } catch (error) {
-    sendError(error);
+    sendError(res, error);
   }
 };
 
