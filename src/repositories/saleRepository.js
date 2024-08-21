@@ -5,7 +5,13 @@ const getAllSales = async () => {
   return await models.Sale.findAll({
     include: [
       {
-        model: models.SaleDetail
+        model: models.SaleDetail,
+        include: [
+          {
+            model: models.Product,
+            attributes: ['name']
+          }
+        ]
       },
       {
         model: models.User
@@ -18,7 +24,13 @@ const getSaleById = async (id) => {
   return await models.Sale.findByPk(id, {
     include: [
       {
-        model: models.SaleDetail
+        model: models.SaleDetail,
+        include: [
+          {
+            model: models.Product,
+            attributes: ['name']
+          }
+        ]
       },
       {
         model: models.User
