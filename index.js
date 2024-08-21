@@ -23,6 +23,7 @@ const saleRoutes = require('./src/routes/saleRoutes');
 const suppliesRoutes = require('./src/routes/suppliesRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const devolutionRoutes = require('./src/routes/devolutionRoutes');
+const motiveDevolutionRoutes = require('./src/routes/motiveDevolutionRoutes');
 
 dotenv.config();
 
@@ -47,7 +48,10 @@ app.use('/role', roleRoutes);
 app.use('/sale', saleRoutes);
 app.use('/supplie', suppliesRoutes);
 app.use('/user', userRoutes);
+
 app.use('/devolution', devolutionRoutes);
+app.use('/motivedevolution', motiveDevolutionRoutes);
+
 
 const port = process.env.SERVER_PORT || 3000;
 

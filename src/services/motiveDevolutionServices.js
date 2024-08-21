@@ -4,4 +4,6 @@ const getAllMotiveDevolutions = async () => {
   return await motiveDevolutionRepository.getAllMotiveDevolutions();
 }
 
-module.exports = getAllMotiveDevolutions
+module.exports = {
+  getAllMotiveDevolutions
+}

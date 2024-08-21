@@ -10,4 +10,6 @@ const getAllMotiveDevolutions = async (req, res) => {
   }
 }
 
-module.exports = getAllMotiveDevolutions;
+module.exports = {
+  getAllMotiveDevolutions
+}
