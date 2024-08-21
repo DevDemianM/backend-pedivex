@@ -49,7 +49,7 @@ app.use('/supplie', suppliesRoutes);
 app.use('/user', userRoutes);
 app.use('/devolution', devolutionRoutes);
 
-const port = process.env.SERVER_PORT || 2145;
+const port = process.env.SERVER_PORT || 3000;
 
 const startServer = async () => {
   try {

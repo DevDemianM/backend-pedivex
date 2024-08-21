@@ -1,4 +1,5 @@
 const { models } = require('../models');
+const sequelize = require('../config/database');
 
 const getAllMasses = async () => {
   return await models.Mass.findAll({
