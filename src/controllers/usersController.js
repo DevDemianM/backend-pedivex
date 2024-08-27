@@ -22,6 +22,25 @@ const getUserById = async (req, res) => {
     }
 };
 
+const getAllClientUsers = async (req, res) =>{
+    try {
+        const users = await userService.getAllClientUsers();
+        sendResponse(res, users);
+    } catch (error) {
+        sendError(res, error);
+    }
+}
+
+const getAllEmployeeUsers = async (req, res) =>{
+    try {
+        const users = await userService.getAllEmployeeUsers();
+        sendResponse(res, users);
+    } catch (error) {
+        sendError(res, error);
+    }
+}
+
+
 const createUser = async (req, res) => {
     try {
         const user = await userService.createUser(req.body);
@@ -58,6 +77,8 @@ const deleteUser = async (req, res) => {
 module.exports = {
     getAllUsers,
     getUserById,
+    getAllClientUsers,
+    getAllEmployeeUsers,
     createUser,
     updateUser,
     deleteUser
