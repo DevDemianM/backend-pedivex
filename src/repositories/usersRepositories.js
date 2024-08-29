@@ -12,25 +12,9 @@ const getUserById = async (id) => {
     };
 };
 
-const getAllClientUsers = async () => {
-    return await models.User.findAll({
-    where: {
-        idRole: {
-        [Op.is]: 2
-        }
-    }
-    })
-};
+const getAllClientUsers = async () => models.User.findAll(/* { where: { idRole: 6 } } */);
 
-const getAllEmployeeUsers = async () => {
-    return await models.User.findAll({
-    where: {
-        idRole: {
-        [Op.is]: 3
-    }
-    }
-    })
-};
+const getAllEmployeeUsers = async () => models.User.findAll({ where: { idRole: 7 } });
 
 const createUser = async (data) => {
     return await models.User.create(data);

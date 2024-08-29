@@ -22,23 +22,28 @@ const getUserById = async (req, res) => {
     }
 };
 
-const getAllClientUsers = async (req, res) =>{
+const getAllClientUsers = async (req, res) => {
     try {
-        const users = await userService.getAllClientUsers();
-        sendResponse(res, users);
+        console.log('CAGASTE');
+        const clients = await userService.getAllClientUsers();
+        console.log('Ya dio', clients);
+        
+        sendResponse (res, clients );
+        
     } catch (error) {
         sendError(res, error);
     }
-}
+};
 
-const getAllEmployeeUsers = async (req, res) =>{
+// Controlador para manejar la solicitud de obtener todos los empleados
+const getAllEmployeeUsers = async (req, res) => {
     try {
-        const users = await userService.getAllEmployeeUsers();
-        sendResponse(res, users);
+        const employees = await userService.getAllEmployeeUsers();
+        sendResponse (res, employees );
     } catch (error) {
         sendError(res, error);
     }
-}
+};
 
 
 const createUser = async (req, res) => {

@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const usersRepository = require('../repositories/usersRepositories');
 
 const getAllUsers = async () => {
@@ -8,13 +9,23 @@ const getUserById = async (id) => {
     return await usersRepository.getUserById(id);
 };
 
-const getAllClientUsers = async ()=>{
-    return await usersRepository.getAllClientUsers();
-}
+// Función para obtener todos los usuarios clientes
+const getAllClientUsers = async () => {
+    try {
+        return await User.findAll({ where: { idRole: { [Op.eq]: 6 } } });
+    } catch (error) {
+        throw new Error('Error obteniendo usuarios clientes');
+    }
+};
 
-const getAllEmployeeUsers = async ()=>{
-    return await usersRepository.getAllEmployeeUsers();
-}
+// Función para obtener todos los usuarios empleados
+const getAllEmployeeUsers = async () => {
+    try {
+        return await User.findAll({ where: { idRole: { [Op.eq]: 7 } } });
+    } catch (error) {
+        throw new Error('Error obteniendo usuarios empleados');
+    }
+};
 const createUser = async (data) => {
     return await usersRepository.createUser(data);
 };

@@ -12,12 +12,13 @@ const users = sequelize.define('users', {
   mail: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
+    unique: {
+      msg: ['Ya el correo esta registrado']
+    }
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false,
-    unique: true
+    allowNull: false
   },
   firstName: {
     type: DataTypes.STRING,
@@ -30,7 +31,9 @@ const users = sequelize.define('users', {
   document: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
+    unique: {
+      msg: ['El documento ya esta registrado']
+    }
   },
   address: {
     type: DataTypes.STRING,
@@ -53,4 +56,4 @@ const users = sequelize.define('users', {
   timestamps: false
 });
 
-module.exports = users;
+module.exports = users;
