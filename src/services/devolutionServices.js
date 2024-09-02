@@ -5,7 +5,7 @@ const getAllDevolutions = async () => {
 }
 
 const createDevolution = async (data) => {
-  return await devolutionRepository.createDevolution(data);
+  return await devolutionRepository.cambioDeSabor(data);
 }
 
 module.exports = {

@@ -31,7 +31,7 @@ const Devolutions = sequelize.define('Devolutions', {
       model: 'motiveDevolutions',  // Referencia por nombre
       key: 'id'
     }
-  }
+  },
 }, {
   tableName: 'devolutions',
   timestamps: false,
