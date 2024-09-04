@@ -25,10 +25,8 @@ const getUserById = async (req, res) => {
 const getAllClientUsers = async (req, res) => {
   try {
     const clients = await userService.getAllClientUsers();
-    console.log('Ya dio', clients);
     sendResponse(res, clients);
   } catch (error) {
-    console.log('CAGASTE');
     sendError(res, error);
   }
 };

@@ -15,7 +15,7 @@ const getUserById = async (id) => {
 const getAllClientUsers = async () => {
   return await models.User.findAll({
     where: {
-      idRole: 6
+      idRole: 1
     }
   });
 }
@@ -23,7 +23,7 @@ const getAllClientUsers = async () => {
 const getAllEmployeeUsers = async () => {
   return await models.User.findAll({
     where: {
-      idRole: 7
+      idRole: 2
     }
   });
 }

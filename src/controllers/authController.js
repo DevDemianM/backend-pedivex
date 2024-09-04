@@ -1,41 +1,25 @@
-const { registerUser, loginUser, initiatePasswordRecovery, resetPassword } = require('../services/authService');
+// // controllers/authController.js
+// const Users = require('../models/users');
+// const jwt = require('jsonwebtoken');
+// require('dotenv').config();
 
-const register = async (req, res) => {
-  try {
-    const user = await registerUser(req.body);
-    res.status(201).json({ message: 'User registered successfully', user });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
+// exports.register = async (req, res) => {
+//   const { mail, password, firstName, lastName, document, address, phoneNumber, idRole } = req.body;
+  
+//   try {
+//     const newUser = await Users.create({
+//       mail,
+//       password, // Será encriptada automáticamente por el hook beforeCreate
+//       firstName,
+//       lastName,
+//       document,
+//       address,
+//       phoneNumber,
+//       idRole,
+//     });
 
-const login = async (req, res) => {
-  try {
-    const token = await loginUser(req.body.mail, req.body.password);
-    res.json({ message: 'Login successful', token });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-// Iniciar recuperación de contraseña
-const recoverPassword = async (req, res) => {
-  try {
-    await initiatePasswordRecovery(req.body.mail);
-    res.json({ message: 'Recovery email sent' });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-// Restablecer contraseña
-const confirmResetPassword = async (req, res) => {
-  try {
-    await resetPassword(req.params.token, req.body.password);
-    res.json({ message: 'Password reset successful' });
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-};
-
-module.exports = { register, login, recoverPassword, confirmResetPassword };
+//     res.status(201).json({ message: 'Usuario registrado exitosamente', user: newUser });
+//   } catch (error) {
+//     res.status(400).json({ message: 'Error en el registro', error: error.errors || error.message });
+//   }
+// };

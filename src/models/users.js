@@ -56,4 +56,6 @@ const users = sequelize.define('users', {
   timestamps: false
 });
 
-module.exports = users;
+module.exports=users;
+
+
