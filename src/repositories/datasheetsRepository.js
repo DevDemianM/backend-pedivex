@@ -26,7 +26,7 @@ const getDatasheetById = async (id) => {
 }
 
 const createDatasheet = async (data) => {
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize.transaction()
   try {
     const {
       idMass,
