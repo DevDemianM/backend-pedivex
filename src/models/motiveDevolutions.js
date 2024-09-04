@@ -11,7 +11,9 @@ const motiveDevolutions = sequelize.define('motiveDevolutions', {
   name: {
     type: DataTypes.STRING(200),
     allowNull: false,
-    unique: true
+    unique: {
+      msg: ['Ya existe este registro']
+    }
   },
   actions: {
     type: DataTypes.STRING(1000),

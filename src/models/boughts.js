@@ -20,7 +20,9 @@ const boughts = sequelize.define('boughts', {
   nroReceipt: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
+    unique: {
+      msg: ['Ya existe este registro']
+    }
   },
   date: {
     type: DataTypes.DATE,

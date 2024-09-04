@@ -11,7 +11,9 @@ const permissions = sequelize.define('permissions', {
   permission: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
+    unique: {
+      msg: ['Ya existe este rol']
+    }
   }
 }, {
   tableName: 'permissions',
