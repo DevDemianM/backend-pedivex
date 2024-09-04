@@ -25,15 +25,7 @@ const Devolutions = sequelize.define('Devolutions', {
   state: {
     type: DataTypes.INTEGER,
     allowNull: false
-  },
-  idMotive: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: MotiveDevolutions,  // Referencia por nombre
-      key: 'id'
-    }
-  },
+  }
 }, {
   tableName: 'devolutions',
   timestamps: false,

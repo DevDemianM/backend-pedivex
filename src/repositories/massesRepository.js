@@ -51,6 +51,7 @@ const createMass = async (data) => {
       ...detail,
       idMass: mass.id
     }));
+    
     await models.MassDetail.bulkCreate(massDetails, { transaction });
 
     await transaction.commit();

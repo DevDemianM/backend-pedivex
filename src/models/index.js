@@ -114,8 +114,8 @@ const connectDb = async () => {
     Devolution.belongsTo(Sale, { foreignKey: 'idSale' });
 
     // Relación entre motiveDevolutions y devolution
-    MotiveDevolution.hasMany(Devolution, { foreignKey: 'idMotive' });
-    Devolution.belongsTo(MotiveDevolution, { foreignKey: 'idMotive' });
+    MotiveDevolution.hasMany(DevolutionDetails, { foreignKey: 'idMotive' });
+    DevolutionDetails.belongsTo(MotiveDevolution, { foreignKey: 'idMotive' });
 
     // Relación entre DevolutionDetails y devolution
     Devolution.hasMany(DevolutionDetails, { foreignKey: 'idDevolution' });
@@ -156,6 +156,7 @@ const models = {
   Sale,
   SaleDetail,
   Devolution,
+  DevolutionDetails,
   MotiveDevolution,
 }
 
