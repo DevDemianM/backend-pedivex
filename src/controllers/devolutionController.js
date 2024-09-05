@@ -10,10 +10,10 @@ const getAllDevolutions = async (req, res) => {
   }
 };
 
-const getAllDevolutionById = async (req, res) => {
+const getDevolutionById = async (req, res) => {
   try {
-    const devolutions = await devolutionService.getAllDevolutionById(req.params.id);
-    sendResponse(res, devolutions);
+    const devolution = await devolutionService.getDevolutionById(req.params.id);
+    sendResponse(res, devolution);
   } catch (error) {
     sendError(res, error);
   }
@@ -30,6 +30,6 @@ const createDevolution = async (req, res) => {
 
 module.exports = {
   getAllDevolutions,
-  getAllDevolutionById,
+  getDevolutionById,
   createDevolution
-}
+};
