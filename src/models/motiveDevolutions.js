@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const motiveDevolutions = sequelize.define('motiveDevolutions', {
+const MotiveDevolutions = sequelize.define('MotiveDevolutions', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -12,7 +12,7 @@ const motiveDevolutions = sequelize.define('motiveDevolutions', {
     type: DataTypes.STRING(200),
     allowNull: false,
     unique: {
-      msg: ['Ya existe este registro']
+      msg: 'Ya existe este registro'
     }
   },
   actions: {
@@ -24,4 +24,4 @@ const motiveDevolutions = sequelize.define('motiveDevolutions', {
   timestamps: false,
 });
 
-module.exports = motiveDevolutions;
+module.exports = MotiveDevolutions;

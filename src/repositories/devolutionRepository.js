@@ -5,27 +5,25 @@ const getAllDevolutions = async () => {
   return await models.Devolution.findAll({
     include: [
       {
-        model: models.MotiveDevolution
-      },
-      {
-        model: models.Sale,
+        model: models.DevolutionDetails, // Modelo para los detalles de devolución
+        as: 'details', // Alias para la asociación
         include: [
           {
-            model: models.SaleDetail,
-            include: [
-              {
-                model: models.Product,
-                attributes: ['name']
-              }
-            ]
-          }
-        ]
-      }
-    ]
+            model: models.Product, // Incluir productos asociados
+            as: 'product', // Alias para la asociación
+          },
+          {
+            model: models.MotiveDevolution, // Incluir motivos de devolución asociados
+            as: 'motiveDevolution', // Alias para la asociación
+          },
+        ],
+      },
+    ],
   });
 };
 
-const getAllDevolutionById = async (id) => {
+
+const getDevolutionById = async (id) => {
   return await models.Devolution.findByPk(id, {
     include: [
       {
@@ -52,46 +50,32 @@ const getAllDevolutionById = async (id) => {
 const createDevolution = async (data) => {
   const transaction = await sequelize.transaction();
   try {
-    const {
-      idSale,
-      details
-    } = data;
-
-    const date = Date.now();
+    const { idSale, devolutionDetails } = data;
+    const date = new Date();
     const state = 1;
 
-    const devolution = await models.Devolution.create({
-      idSale,
-      date,
-      state
-    }, { transaction });
+    const devolution = await models.Devolution.create(
+      { idSale, date, state },
+      { transaction }
+    );
 
-    const devolutionDetails = details.map(detail => ({
+    const details = devolutionDetails.map(detail => ({
       ...detail,
       idDevolution: devolution.id
     }));
 
-    await models.DevolutionDetails.bulkCreate(
-      devolutionDetails,
-      { transaction });
-
+    await models.DevolutionDetails.bulkCreate(details, { transaction });
     await transaction.commit();
 
-    const devolutionCreated = await getAllDevolutionById(devolution.id);
-
-
-    return { succes: true, devolutionCreated }
-
+    return { success: true, devolution };
   } catch (error) {
     await transaction.rollback();
-    console.error('Error al crear la devolucion y sus detalles:', error);
     return { success: false, error };
   }
-}
-
+};
 
 module.exports = {
   getAllDevolutions,
-  getAllDevolutionById,
-  createDevolution,
+  getDevolutionById,
+  createDevolution
 };

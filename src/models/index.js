@@ -114,16 +114,26 @@ const connectDb = async () => {
     Devolution.belongsTo(Sale, { foreignKey: 'idSale' });
 
     // Relación entre motiveDevolutions y devolution
+    DevolutionDetails.belongsTo(MotiveDevolution, { 
+      foreignKey: 'idMotive',
+      as: 'motiveDevolution' // Alias para la asociación
+    });
     MotiveDevolution.hasMany(DevolutionDetails, { foreignKey: 'idMotive' });
-    DevolutionDetails.belongsTo(MotiveDevolution, { foreignKey: 'idMotive' });
 
     // Relación entre DevolutionDetails y devolution
-    Devolution.hasMany(DevolutionDetails, { foreignKey: 'idDevolution' });
+    Devolution.hasMany(DevolutionDetails, { 
+      foreignKey: 'idDevolution',
+      as: 'details' // Alias para la asociación
+    });
     DevolutionDetails.belongsTo(Devolution, { foreignKey: 'idDevolution' });
 
     // Relación entre productos y DevolutionDetails
     Product.hasOne(DevolutionDetails, { foreignKey: 'idProduct' });
-    DevolutionDetails.belongsTo(Product, { foreignKey: 'idProduct' });
+    DevolutionDetails.belongsTo(Product, { 
+      foreignKey: 'idProduct',
+      as: 'product' // Alias para la asociación
+    });
+    DevolutionDetails.belongsTo(Product, { foreignKey: 'changedProduct' });
 
     await db.sync({ alter: true }); // Sincroniza la base de datos y recrea las tablas
     console.log('BD sincronizada y constraints creados');
