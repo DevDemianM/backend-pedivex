@@ -7,9 +7,9 @@ const getAllUsers = async () => {
 };
 
 const getUserById = async (id) => {
-    return await models.User.findByPk(id), {
+    return await models.User.findByPk(id, {
         include: [models.Role]
-    };
+    })
 };
 
 const createUser = async (data) => {
