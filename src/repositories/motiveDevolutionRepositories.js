@@ -8,8 +8,6 @@ const createMotiveDevolutions = async (data) => {
     return await models.MotiveDevolution.create(data);
   };
 
-
-
 module.exports = {
     getAllMotiveDevolutions,
     createMotiveDevolutions

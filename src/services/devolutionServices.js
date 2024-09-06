@@ -1,7 +1,11 @@
-const devolutionRepository = require('../repositories/devolutionRespository');
+const devolutionRepository = require('../repositories/devolutionRepository');
 
 const getAllDevolutions = async () => {
   return await devolutionRepository.getAllDevolutions();
+}
+
+const getDevolutionById = async (id) => {
+  return await devolutionRepository.getDevolutionById(id);
 }
 
 const createDevolution = async (data) => {
@@ -10,5 +14,6 @@ const createDevolution = async (data) => {
 
 module.exports = {
   getAllDevolutions,
+  getDevolutionById,
   createDevolution
-}
+};

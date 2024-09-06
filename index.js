@@ -5,7 +5,7 @@ const { connectDb } = require('./src/models');
 const cors = require('cors');
 
 //Import Rutas
-const authRoutes = require('./src/routes/authRoutes');
+// const authRoutes = require('./src/routes/authRoutes');
 const boughtDetailRoutes = require('./src/routes/boughtDetailRoutes');
 const boughtRoutes = require('./src/routes/boughtRoutes');
 const orderDetailRoutes = require('./src/routes/orderDetailRoutes');
@@ -23,6 +23,9 @@ const saleRoutes = require('./src/routes/saleRoutes');
 const suppliesRoutes = require('./src/routes/suppliesRoutes');
 const userRoutes = require('./src/routes/userRoutes');
 const devolutionRoutes = require('./src/routes/devolutionRoutes');
+const motiveDevolutionRoutes = require('./src/routes/motiveDevolutionRoutes');
+const clientsRoutes = require('./src/routes/clientsRoutes');
+const employeesRoutes = require('./src/routes/employeeRoutes');
 
 dotenv.config();
 
@@ -30,7 +33,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use('/auth', authRoutes);
+// app.use('/auth', authRoutes);
 app.use('/boughtDetail', boughtDetailRoutes);
 app.use('/bought', boughtRoutes);
 app.use('/orderDetail', orderDetailRoutes);
@@ -47,7 +50,11 @@ app.use('/role', roleRoutes);
 app.use('/sale', saleRoutes);
 app.use('/supplie', suppliesRoutes);
 app.use('/user', userRoutes);
+app.use('/client', clientsRoutes);
+app.use('/employee', employeesRoutes);
 app.use('/devolution', devolutionRoutes);
+app.use('/motivedevolution', motiveDevolutionRoutes);
+
 
 const port = process.env.SERVER_PORT || 3000;
 

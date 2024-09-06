@@ -11,7 +11,9 @@ const supplies = db.define('supplies', {
   name: {
     type: DataTypes.STRING(100),
     allowNull: false,
-    unique: true,
+    unique: {
+      msg: ['Ya existe este registro']
+    }
   },
   stock: {
     type: DataTypes.FLOAT,

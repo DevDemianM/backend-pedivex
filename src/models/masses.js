@@ -11,7 +11,9 @@ const masses = sequelize.define('masses', {
   name: {
     type: DataTypes.STRING(100),
     allowNull: false,
-    unique: true,
+    unique: {
+      msg: ['Ya existe este registro']
+    }
   },
   notes: {
     type: DataTypes.STRING(500),

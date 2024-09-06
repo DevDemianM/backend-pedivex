@@ -11,7 +11,9 @@ const providers = sequelize.define('providers', {
     provider: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+        unique: {
+          msg: ['Ya existe este registro']
+        }
     }
 }, {
   tableName: 'providers',

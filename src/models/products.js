@@ -29,7 +29,9 @@ const products = db.define('products', {
   name: {
     type: DataTypes.STRING(100),
     allowNull: false,
-    unique: true,
+    unique: {
+      msg: ['Ya existe este registro']
+    }
   },
   stock: {
     type: DataTypes.INTEGER,
