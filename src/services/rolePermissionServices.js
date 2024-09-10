@@ -16,8 +16,9 @@ const updateRolePermission = async (id, data) => {
     return await rolePermissionRepository.updateRolePermission(id, data);
 };
 
-const deleteRolePermission = async (id) => {
-    return await rolePermissionRepository.deleteRolePermission(id);
+// Cambiar este método para eliminar por idRole
+const deleteRolePermissionsByRoleId = async (idRole) => {
+    return await rolePermissionRepository.deleteRolePermissionsByRoleId(idRole);
 };
 
 module.exports = {
@@ -25,5 +26,5 @@ module.exports = {
     getRolePermissionById,
     createRolePermission,
     updateRolePermission,
-    deleteRolePermission
+    deleteRolePermissionsByRoleId, // Cambiado para eliminar por idRole desde req.body
 };

@@ -63,6 +63,20 @@ const updateUser = async (req, res) => {
   }
 };
 
+// Nueva función para actualizar solo el campo `state`
+const updateUserState = async (req, res) => {
+  try {
+    const { state } = req.body;
+    const updated = await userService.updateUserState(req.params.id, state);
+    if (updated[0] === 0) {
+      return sendError(res, 'user not found', 404);
+    }
+    sendResponse(res, 'user state updated successfully');
+  } catch (error) {
+    sendError(res, error);
+  }
+};
+
 const deleteUser = async (req, res) => {
   try {
     const deleted = await userService.deleteUser(req.params.id);
@@ -82,6 +96,7 @@ module.exports = {
   getAllEmployeeUsers,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  updateUserState
 };
 

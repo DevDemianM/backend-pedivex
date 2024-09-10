@@ -14,6 +14,10 @@ const roles = sequelize.define('roles', {
     unique: {
       msg: ['Ya existe este rol']
     }
+  },
+  state: {
+    type: DataTypes.INTEGER,
+    allowNull: false
   }
 }, {
   tableName: 'roles',
