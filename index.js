@@ -52,7 +52,6 @@ app.use('/supplie', suppliesRoutes);
 app.use('/user', userRoutes);
 app.use('/client', clientsRoutes);
 app.use('/employee', employeesRoutes);
-
 app.use('/devolution', devolutionRoutes);
 app.use('/motivedevolution', motiveDevolutionRoutes);
 

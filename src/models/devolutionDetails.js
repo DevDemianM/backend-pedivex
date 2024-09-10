@@ -15,7 +15,7 @@ const DevolutionDetails = sequelize.define('DevolutionDetails', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: Devolutions, // Relación con la tabla principal de devoluciones
+      model: Devolutions,
       key: 'id',
     },
   },
@@ -23,7 +23,7 @@ const DevolutionDetails = sequelize.define('DevolutionDetails', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: Products, // Relación con la tabla de productos
+      model: Products,
       key: 'id',
     },
   },
@@ -35,7 +35,7 @@ const DevolutionDetails = sequelize.define('DevolutionDetails', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: MotiveDevolutions, // Relación con la tabla de motivos de devolución
+      model: MotiveDevolutions,
       key: 'id',
     },
   },
@@ -43,7 +43,7 @@ const DevolutionDetails = sequelize.define('DevolutionDetails', {
     type: DataTypes.INTEGER,
     allowNull: true,
     references: {
-      model: Products, // Relación con la tabla de productos para el producto cambiado
+      model: Products,
       key: 'id',
     },
   },
