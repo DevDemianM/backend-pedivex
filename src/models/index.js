@@ -24,6 +24,7 @@ const SaleDetail = require('./saleDetails');
 const Devolution = require('./devolutions');
 const MotiveDevolution = require('./motiveDevolutions');
 const DevolutionDetails = require('./devolutionDetails');
+const States = require('./states');
 
 // Definición de relaciones
 const connectDb = async () => {
@@ -168,6 +169,7 @@ const models = {
   Devolution,
   DevolutionDetails,
   MotiveDevolution,
+  States
 }
 
 
