@@ -12,6 +12,7 @@ const getUserById = async (id) => {
   });
 };
 
+
 const getAllClientUsers = async () => {
   return await models.User.findAll({
     where: {

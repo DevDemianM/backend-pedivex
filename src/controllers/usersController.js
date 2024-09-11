@@ -22,6 +22,7 @@ const getUserById = async (req, res) => {
   }
 };
 
+
 const getAllClientUsers = async (req, res) => {
   try {
     const clients = await userService.getAllClientUsers();
