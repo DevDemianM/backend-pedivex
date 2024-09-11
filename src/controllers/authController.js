@@ -1,25 +1,32 @@
-// // controllers/authController.js
-// const Users = require('../models/users');
-// const jwt = require('jsonwebtoken');
-// require('dotenv').config();
+// const { registerUser, loginUser, recoverPassword } = require('../services/authService');
 
-// exports.register = async (req, res) => {
-//   const { mail, password, firstName, lastName, document, address, phoneNumber, idRole } = req.body;
-  
+// const register = async (req, res) => {
 //   try {
-//     const newUser = await Users.create({
-//       mail,
-//       password, // Será encriptada automáticamente por el hook beforeCreate
-//       firstName,
-//       lastName,
-//       document,
-//       address,
-//       phoneNumber,
-//       idRole,
-//     });
-
-//     res.status(201).json({ message: 'Usuario registrado exitosamente', user: newUser });
+//     const user = await registerUser(req.body);
+//     res.status(201).json(user);
 //   } catch (error) {
-//     res.status(400).json({ message: 'Error en el registro', error: error.errors || error.message });
+//     res.status(400).json({ message: error.message });
 //   }
 // };
+
+// const login = async (req, res) => {
+//   try {
+//     const { mail, password } = req.body;
+//     const user = await loginUser(mail, password);
+//     res.json(user);
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// };
+
+// const recover = async (req, res) => {
+//   try {
+//     const { mail, newPassword } = req.body;
+//     const response = await recoverPassword(mail, newPassword);
+//     res.json(response);
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// };
+
+// module.exports = { register, login, recover };

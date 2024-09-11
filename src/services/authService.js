@@ -1,50 +1,75 @@
-const bcrypt = require('bcrypt'); //Bcrypt es para encriptar las contraseñas.
-const jwt = require('jsonwebtoken');
-const Users = require('../models/users');
-const { sendRecoveryEmail } = require('../services/emailService');
+// src/services/authService.js
 
-const registerUser = async (userData) => {
-  const hashedPassword = await bcrypt.hash(userData.password, 10);
-  userData.password = hashedPassword;
-  const user = await Users.create(userData);
-  return user;
-};
+const API_URL = 'http://localhost:5000/api/auth'; // Cambia la URL según tu configuración
 
-const loginUser = async (email, password) => {
-  const user = await Users.findOne({ where: { mail: email } });
-  if (!user || !await bcrypt.compare(password, user.password)) {
-    throw new Error('Email or password is incorrect');
+// Función para registrar un usuario
+export const register = async (userData) => {
+  try {
+    const response = await fetch(`${API_URL}/register`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error en el registro');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error en register:', error);
+    throw error;
   }
-
-  const token = jwt.sign({ userId: user.id, role: user.idRole }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  return token;
 };
 
-// Recuperación de contraseña
-const initiatePasswordRecovery = async (email) => {
-  const user = await Users.findOne({ where: { mail: email } });
-  if (!user) {
-    throw new Error('No user found with this email');
+// Función para iniciar sesión
+export const login = async (credentials) => {
+  try {
+    const response = await fetch(`${API_URL}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error en el inicio de sesión');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error en login:', error);
+    throw error;
   }
-
-  // Generar token
-  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  await sendRecoveryEmail(email, token);
-  return token;
 };
 
-const resetPassword = async (token, newPassword) => {
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  const user = await Users.findByPk(decoded.userId);
-  if (!user) {
-    throw new Error('Invalid token');
+// Función para recuperar la contraseña
+export const recoverPassword = async (mail, newPassword) => {
+  try {
+    const response = await fetch(`${API_URL}/recover`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ mail, newPassword }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error en la recuperación de contraseña');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error en recoverPassword:', error);
+    throw error;
   }
-
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
-  user.password = hashedPassword;
-  await user.save();
-  
-  return user;
 };
-
-module.exports = { registerUser, loginUser, initiatePasswordRecovery, resetPassword };

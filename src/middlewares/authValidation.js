@@ -1,16 +1,17 @@
-// const { body, validationResult } = require('express-validator');
+// const { check } = require('express-validator');
 
-// const validateRegistration = [
-//   body('mail').isEmail().withMessage('Must be a valid email'),
-//   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
-  
-//   (req, res, next) => {
-//     const errors = validationResult(req);
-//     if (!errors.isEmpty()) {
-//       return res.status(400).json({ errors: errors.array() });
-//     }
-//     next();
-//   },
+// const registerValidation = [
+//   check('mail').isEmail().withMessage('Correo no es válido'),
+//   check('password').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
+//   check('firstName').notEmpty().withMessage('El nombre es obligatorio'),
+//   check('lastName').notEmpty().withMessage('El apellido es obligatorio'),
+//   check('document').notEmpty().withMessage('El documento es obligatorio'),
+//   check('address').notEmpty().withMessage('La dirección es obligatoria'),
 // ];
 
-// module.exports = { validateRegistration };
+// const loginValidation = [
+//   check('mail').isEmail().withMessage('Correo no es válido'),
+//   check('password').notEmpty().withMessage('La contraseña es obligatoria'),
+// ];
+
+// module.exports = { registerValidation, loginValidation };
