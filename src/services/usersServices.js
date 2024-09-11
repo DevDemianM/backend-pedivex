@@ -9,6 +9,7 @@ const getUserById = async (id) => {
   return await usersRepository.getUserById(id);
 };
 
+
 // Función para obtener todos los usuarios clientes
 const getAllClientUsers = async () => {
   return await usersRepository.getAllClientUsers();
