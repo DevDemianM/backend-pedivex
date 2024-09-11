@@ -6,7 +6,7 @@ const validateSupplies = require('../middlewares/validateSupplies');
 router.get('/', SuppliesController.getAllSupplies);
 router.get('/:id', SuppliesController.getSuppliesById);
 router.post('/', validateSupplies, SuppliesController.createSupplies);
-router.put('/:id', validateSupplies, SuppliesController.updateSupplies);
+router.put('/:id', SuppliesController.updateSupplies);
 router.delete('/:id', SuppliesController.deleteSupplies);
 
 module.exports = router;

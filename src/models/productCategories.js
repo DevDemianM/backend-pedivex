@@ -12,6 +12,11 @@ const productCategories = db.define('productCategories', {
     type: DataTypes.STRING(100),
     allowNull: false,
   },
+  state: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 1,
+  },
 }, {
   tableName: 'productCategories',
   timestamps: false,
