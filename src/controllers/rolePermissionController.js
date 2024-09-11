@@ -43,13 +43,18 @@ const updateRolePermission = async (req, res) => {
     }
 };
 
-const deleteRolePermission = async (req, res) => {
+// Cambiamos el método para que reciba el idRole por el cuerpo (req.body)
+const deleteRolePermissionsByRoleId = async (req, res) => {
+    const { idRole } = req.body; // Obtener idRole del cuerpo de la solicitud
     try {
-        const deleted = await rolePermissionService.deleteRolePermission(req.params.id);
-        if (deleted === 0) {
-            return sendError(res, 'rolePermission not found', 404);
+        if (!idRole) {
+            return sendError(res, 'idRole is required', 400);
         }
-        sendResponse(res, 'rolePermission deleted successfully');
+        const deleted = await rolePermissionService.deleteRolePermissionsByRoleId(idRole);
+        if (deleted === 0) {
+            return sendError(res, 'rolePermissions not found', 404);
+        }
+        sendResponse(res, 'rolePermissions deleted successfully');
     } catch (error) {
         sendError(res, error);
     }
@@ -60,6 +65,5 @@ module.exports = {
     getRolePermissionById,
     createRolePermission,
     updateRolePermission,
-    deleteRolePermission
+    deleteRolePermissionsByRoleId, // Cambiado para eliminar por idRole desde req.body
 };
-

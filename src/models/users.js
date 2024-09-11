@@ -43,6 +43,10 @@ const users = sequelize.define('users', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  state: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
   idRole: {
     type: DataTypes.INTEGER,
     allowNull: false,
