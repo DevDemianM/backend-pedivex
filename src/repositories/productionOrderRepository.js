@@ -49,18 +49,11 @@ const createProductionOrder = async (data) => {
   }
 };
 
-const updateProductionOrder = async (req, res) => {
-  const { id } = req.params;
-  const { state, details } = req.body; // Se asume que `details` contiene los productos e insumos
-
-  try {
-    const result = await productionOrderService.updateProductionOrder(id, { state, details });
-    return res.status(200).json(result);
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
+const updateProductionOrder = async (id, data) => {
+  return await models.ProductionOrder.update(data, {
+    where: { id }
+  });
 };
-
 
 const deleteProductionOrder = async (id) => {
   return await models.ProductionOrder.destroy({

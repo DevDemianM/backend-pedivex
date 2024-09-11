@@ -1,3 +1,4 @@
+
 const productionOrderRepository = require('../repositories/productionOrderRepository');
 
 const getAllProductionOrder = async () => {
@@ -13,15 +14,8 @@ const createProductionOrder = async (data) => {
 };
 
 const updateProductionOrder = async (id, data) => {
-    try {
-      const { state, details } = data;
-      const result = await productionOrderRepository.updateProductionOrder(id, state, details);
-      return result;
-    } catch (error) {
-      console.error('Error in service:', error);
-      throw error;
-    }
-  };
+    return await productionOrderRepository.updateProductionOrder(id, data);
+};
 
 const deleteProductionOrder = async (id) => {
     return await productionOrderRepository.deleteProductionOrder(id);
