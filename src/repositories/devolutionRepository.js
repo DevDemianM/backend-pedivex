@@ -54,17 +54,38 @@ const createDevolution = async (data) => {
     const date = new Date();
     const state = 1;
 
+    // Crear la devolución
     const devolution = await models.Devolution.create(
       { idSale, date, state },
       { transaction }
     );
 
+    // Preparar detalles de devolución
     const details = devolutionDetails.map(detail => ({
       ...detail,
       idDevolution: devolution.id
     }));
 
+    // Crear detalles de devolución
     await models.DevolutionDetails.bulkCreate(details, { transaction });
+
+    // Actualizar el stock de los productos
+    for (const detail of devolutionDetails) {
+      const { idProduct, quantity, changedProduct, changedQuantity } = detail;
+
+      // Actualizar stock del producto devuelto
+      await models.Product.update(
+        { stock: sequelize.literal(`stock + ${quantity}`) },
+        { where: { id: idProduct }, transaction }
+      );
+
+      // Actualizar stock del producto cambiado
+      await models.Product.update(
+        { stock: sequelize.literal(`stock - ${changedQuantity}`) },
+        { where: { id: changedProduct }, transaction }
+      );
+    }
+
     await transaction.commit();
 
     return { success: true, devolution };
@@ -73,6 +94,7 @@ const createDevolution = async (data) => {
     return { success: false, error };
   }
 };
+
 
 module.exports = {
   getAllDevolutions,

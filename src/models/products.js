@@ -52,6 +52,11 @@ const products = db.define('products', {
     type: DataTypes.STRING(5000),
     allowNull: false,
   },
+  // inCatalogue: {
+  //   type: DataTypes.BOOLEAN,
+  //   allowNull: false,
+  //   defaultValue: true
+  // },
   state: {
     type: DataTypes.INTEGER,
     allowNull: false,

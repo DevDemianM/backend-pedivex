@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, JSON } = require('sequelize');
 const { models } = require('../models');
 const sequelize = require('../config/database');
 const datasheetsRepository = require('./datasheetsRepository');
@@ -113,7 +113,7 @@ const createProduct = async (data) => {
     errorMessage = 'definir las variables para insertar en el producto';
 
     const idDatasheet = await currentDatasheet.datasheet.dataValues.id;
-    const state = 1;
+    const state = 5;
 
     /// Se crea el producto "manualmente"
     errorMessage = 'crear el producto';
@@ -136,21 +136,197 @@ const createProduct = async (data) => {
     return { success: false, error };
   }
 };
+
+
+// const updateProduct = async (id, data) => {
+
+//   console.log('\ndata :', data);
+//   console.log('\ndata.datasheet :', data.datasheet);
+//   console.log('\ndata.datasheet.details :', data.datasheet.details);
+
+//   const transaction = await sequelize.transaction();
+
+//   try {
+//     // Se busca el producto actual por ID
+//     const product = await findProductById(id);
+
+//     let updatedProduct = null;
+
+//     // Verificar si se deben actualizar los datos básicos del producto
+//     if (product.name !== data.name ||
+//       product.stock !== data.stock ||
+//       product.price !== data.price ||
+//       product.state !== data.state) {
+
+//       updatedProduct = await models.Product.update(id, {
+//         name: data.name,
+//         stock: data.stock,
+//         price: data.price,
+//         state: data.state
+//       });
+//     }
+//     // Verificar si hay cambios en la ficha técnica
+//     if (data.datasheet) {
+
+//       const toUpdateDatasheet = await datasheetsRepository.getDatasheetById(product.idDatasheet);
+
+//       let currentDatasheet = toUpdateDatasheet.dataValues;
+
+//       console.log('\nFicha que se va a actualizar: ', currentDatasheet);
+//       console.log('\nDetalles de la ficha que se va a actualizar: ', currentDatasheet.datasheetDetails);
+//       let datasheetDetailIndex = 0;
+//       currentDatasheet.datasheetDetails.map(detail => {
+//         console.log(`\nDetalle #${datasheetDetailIndex++}: ${detail.dataValues}`);
+//       })
+
+//       // Si hay cambios en los detalles de la ficha, se crea una nueva ficha técnica
+//       if (JSON.stringify(data.datasheet.details) !== JSON.stringify(currentDatasheet.DatasheetDetails)) {
+
+//         // Se finaliza la ficha técnica actual
+
+//         // await models.Datasheet.update(currentDatasheet.id,
+//         //   { endDate: Date.now() },
+//         //   { where: { id: currentDatasheet.id }, transaction }
+//         // );
+
+//         const oldDatasheet = await datasheetsRepository.updateDatasheet(currentDatasheet.id, {
+//           idMass: currentDatasheet.idMass, 
+//           startDate: currentDatasheet.startDate, 
+//           endDate: Date.now(), 
+//           details: currentDatasheet.DatasheetDetails
+//         });
+
+//         console.log('\nFicha vieja: ', oldDatasheet);
+
+//         /// Se crea la ficha nueva con los datos de llegada
+//         const toCreateDatasheet = {
+//           idMass: currentDatasheet.idMass,
+//           details: data.datasheet
+//         };
+
+//         console.log('\nFicha a crear: ', toCreateDatasheet);
+        
+
+//         // Se crea una nueva ficha técnica
+//         const newDatasheet = await datasheetsRepository.createDatasheet(toCreateDatasheet);
+
+//         console.log('\nFicha nueva: ', newDatasheet);
+
+
+//         updateProduct = await models.Product.update( id, {
+//           ...data,
+//           idDatasheet: newDatasheet.id
+//         });
+
+//         console.log('\nProducto actualizado', updateProduct);
+        
+//       }
+//     }
+
+//     await transaction.commit();
+//     return { success: true, updatedProduct };
+
+//   } catch (error) {
+//     await transaction.rollback();
+//     console.error('\nError al actualizar el producto: ', error);
+//     return { success: false, error };
+//   }
+// };
+
+
+// const updateProduct = async (id, data) => {
+//   console.log('\ndata :', data);
+//   console.log('\ndata.datasheet :', data.datasheet);
+//   console.log('\ndata.datasheet.details :', data.datasheet.details);
+
+//   const transaction = await sequelize.transaction();
+
+//   try {
+//     // Buscar el producto actual por ID
+//     const product = await findProductById(id);
+
+//     // Verificar si se deben actualizar los datos básicos del producto
+//     if (product.name !== data.name ||
+//         product.stock !== data.stock ||
+//         product.price !== data.price ||
+//         product.state !== data.state) {
+
+//       await models.Product.update(
+//         {
+//           name: data.name,
+//           stock: data.stock,
+//           price: data.price,
+//           state: data.state
+//         },
+//         { where: { id }, transaction }
+//       );
+//     }
+
+//     // Verificar si hay cambios en la ficha técnica
+//     if (data.datasheet) {
+//       const currentDatasheet = await datasheetsRepository.getDatasheetById(product.idDatasheet);
+      
+//       // Comparar los detalles de la ficha técnica
+//       if (data.datasheet.details != currentDatasheet.DatasheetDetails) {
+
+//         // Finalizar la ficha técnica actual
+//         await datasheetsRepository.updateDatasheet(
+//           currentDatasheet.id, 
+//           {
+//             idMass: currentDatasheet.idMass,
+//             startDate: currentDatasheet.startDate,
+//             endDate: Date.now(),
+//             details: currentDatasheet.datasheetDetails
+//           },
+//           { transaction }
+//         );
+
+//         // Crear una nueva ficha técnica
+//         const newDatasheet = await datasheetsRepository.createDatasheet(
+//           {
+//             idMass: currentDatasheet.idMass,
+//             details: data.datasheet.details
+//           },
+//           { transaction }
+//         );
+
+//         // Actualizar el producto con la nueva ficha técnica
+//         await models.Product.update(
+//           { idDatasheet: newDatasheet.id },
+//           { where: { id }, transaction }
+//         );
+//       }
+//     }
+
+//     await transaction.commit();
+//     return { success: true };
+
+//   } catch (error) {
+//     await transaction.rollback();
+//     console.error('\nError al actualizar el producto: ', error);
+//     return { success: false, error };
+//   }
+// };
+
+
 const updateProduct = async (id, data) => {
+  console.log('\ndata :', data);
+  console.log('\ndata.datasheet :', data.datasheet);
+  console.log('\ndata.datasheet.details :', data.datasheet.details);
+
   const transaction = await sequelize.transaction();
+
   try {
-    // Se busca el producto actual por ID
+    // Buscar el producto actual por ID
     const product = await findProductById(id);
 
-    let updatedProduct = null;
-
     // Verificar si se deben actualizar los datos básicos del producto
-    if (product.name !== data.name || 
-        product.stock !== data.stock || 
-        product.price !== data.price || 
+    if (product.name !== data.name ||
+        product.stock !== data.stock ||
+        product.price !== data.price ||
         product.state !== data.state) {
-      
-      updatedProduct = await models.Product.update(
+
+      await models.Product.update(
         {
           name: data.name,
           stock: data.stock,
@@ -164,38 +340,57 @@ const updateProduct = async (id, data) => {
     // Verificar si hay cambios en la ficha técnica
     if (data.datasheet) {
       const currentDatasheet = await datasheetsRepository.getDatasheetById(product.idDatasheet);
+      
+      // Comparar los detalles de la ficha técnica
+      const currentDetails = currentDatasheet.DatasheetDetails.map(detail => ({
+        idSupplie: detail.idSupplie,
+        amount: detail.amount,
+        unit: detail.unit
+      }));
 
-      // Si hay cambios en los detalles de la ficha o en la masa, se crea una nueva ficha técnica
-      if (data.datasheet.idMass !== currentDatasheet.idMass || 
-          JSON.stringify(data.datasheet.details) !== JSON.stringify(currentDatasheet.DatasheetDetails)) {
+      const newDetails = data.datasheet.details.map(detail => ({
+        idSupplie: detail.idSupplie,
+        amount: detail.amount,
+        unit: detail.unit
+      }));
 
-        // Se finaliza la ficha técnica actual
-        await models.Datasheet.update(
-          { endDate: Date.now() },
-          { where: { id: currentDatasheet.id }, transaction }
+      // Si los detalles son diferentes, actualizamos la ficha técnica
+      if (JSON.stringify(currentDetails) !== JSON.stringify(newDetails)) {
+        // Finalizar la ficha técnica actual
+        await datasheetsRepository.updateDatasheet(
+          currentDatasheet.id, 
+          {
+            idMass: currentDatasheet.idMass,
+            startDate: currentDatasheet.startDate,
+            endDate: new Date(), // Usar Date.now() para finalizar la ficha técnica actual
+            details: currentDetails
+          },
+          { transaction }
         );
 
-        const toCreateDatasheet = {
-          idMass: currentDatasheet.idMass,
-          details: data.datasheet
-        };
+        // Crear una nueva ficha técnica
+        const newDatasheet = await datasheetsRepository.createDatasheet(
+          {
+            idMass: data.datasheet.idMass || currentDatasheet.idMass,
+            details: newDetails
+          },
+          { transaction }
+        );
 
-        // Se crea una nueva ficha técnica
-        const newDatasheet = await datasheetsRepository.createDatasheet(toCreateDatasheet);
-
+        // Actualizar el producto con la nueva ficha técnica
         await models.Product.update(
-          { idDatasheet: newDatasheet.datasheet.id },
+          { idDatasheet: newDatasheet.id },
           { where: { id }, transaction }
         );
       }
     }
 
     await transaction.commit();
-    return { success: true, updatedProduct };
+    return { success: true };
 
   } catch (error) {
     await transaction.rollback();
-    console.error('Error al actualizar el producto:', error);
+    console.error('\nError al actualizar el producto: ', error);
     return { success: false, error };
   }
 };
@@ -207,6 +402,39 @@ module.exports = {
   createProduct,
   updateProduct
 };
+
+
+/* 
+* @Formato de llegada del producto a actualizar
+
+* @data
+  {
+    id: 4,
+    idDatasheet: 8,
+    idCategorie: 1,
+    name: 'Panzerroti de todo',
+    stock: 0,
+    price: '15000',
+    image: 'imagen2.jpg',
+    state: 1,
+    productCategory: { id: 1, name: 'Congelados' },
+    datasheet: { details: [ [Array] ] }
+  }
+
+* @data.datasheet
+  { details: [ [ [Object], [Object], [Object], [Object], [Object] ] ] }
+
+* @data.datasheet.details
+  [
+    [
+      { idSupplie: 11, amount: 45, unit: 'gr' },
+      { idSupplie: 12, amount: 67, unit: 'gr' },
+      { idSupplie: 3, amount: 98, unit: 'gr' },
+      { idSupplie: 2, amount: 32, unit: 'gr' },
+      { idSupplie: 15, amount: 32, unit: 'gr' }
+    ]
+  ]
+*/
 
 
 /*
