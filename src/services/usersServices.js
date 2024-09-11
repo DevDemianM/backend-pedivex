@@ -32,6 +32,11 @@ const deleteUser = async (id) => {
   return await usersRepository.deleteUser(id);
 };
 
+// Nueva función para actualizar solo el campo `state`
+const updateUserState = async (id, state) => {
+  return await usersRepository.updateUserState(id, state);
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -39,5 +44,6 @@ module.exports = {
   getAllEmployeeUsers,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  updateUserState
 };

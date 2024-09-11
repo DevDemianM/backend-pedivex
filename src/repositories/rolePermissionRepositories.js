@@ -18,9 +18,10 @@ const updateRolePermission = async (id, data) => {
     });
 };
 
-const deleteRolePermission = async (id) => {
+// Cambiar para eliminar por idRole
+const deleteRolePermissionsByRoleId = async (idRole) => {
     return await models.RolPermission.destroy({
-        where: { id }
+        where: { idRole } // Eliminar todas las filas que coincidan con el idRole
     });
 };
 
@@ -29,5 +30,5 @@ module.exports = {
     getRolePermissionById,
     createRolePermission,
     updateRolePermission,
-    deleteRolePermission
+    deleteRolePermissionsByRoleId, // Cambiado para eliminar por idRole desde req.body
 };

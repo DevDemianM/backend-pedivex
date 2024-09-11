@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const MotiveDevolutions = require('./motiveDevolutions');
 const Sales = require('./sales');
 
 const Devolutions = sequelize.define('Devolutions', {
@@ -25,15 +24,7 @@ const Devolutions = sequelize.define('Devolutions', {
   state: {
     type: DataTypes.INTEGER,
     allowNull: false
-  },
-  idMotive: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: MotiveDevolutions,  // Referencia por nombre
-      key: 'id'
-    }
-  },
+  }
 }, {
   tableName: 'devolutions',
   timestamps: false,

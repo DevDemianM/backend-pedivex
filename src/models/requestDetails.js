@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const productionOrders = require('./productionOrders');
 const requests = require('./requests');
+const products = require('./products');
 
 const requestDetails = sequelize.define('requestDetails', {
   id: {
@@ -22,7 +22,7 @@ const requestDetails = sequelize.define('requestDetails', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: productionOrders,
+      model: products,
       key: 'id'
     },
   },

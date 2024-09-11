@@ -45,6 +45,12 @@ const deleteUser = async (id) => {
   });
 };
 
+const updateUserState = async (id, state) => {
+  return await models.User.update({ state }, {
+    where: { id }
+  });
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -52,5 +58,6 @@ module.exports = {
   getAllEmployeeUsers,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  updateUserState
 };
