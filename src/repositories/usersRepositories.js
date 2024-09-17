@@ -1,5 +1,40 @@
 const { models } = require('../models');
-const { Op } = require('../config/database');
+const generateToken = require('../utils/generateToken');
+
+const loginUser = async (data) => {
+  try {
+
+    const currentUser = await models.User.findAll({
+      where: {
+        mail: data.mail
+      }
+    });
+
+    const user = currentUser[0].dataValues;
+
+    console.log(data);
+    console.log(user);
+
+    if (!currentUser) {
+      return {msg: 'usuario_no_encontrado'};
+    }
+
+    if (
+      user.password == data.password &&
+      user.mail == data.mail
+    ) {
+      const token = await generateToken(currentUser.id);
+      return { msg: 'success', token };
+      // res.send({ msg: 'success', token });
+    } else {
+      throw new Error('credenciales');
+    }
+
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 const getAllUsers = async () => {
   return await models.User.findAll({
     include: [models.Role]
@@ -52,6 +87,7 @@ const updateUserState = async (id, state) => {
 };
 
 module.exports = {
+  loginUser,
   getAllUsers,
   getUserById,
   getAllClientUsers,
