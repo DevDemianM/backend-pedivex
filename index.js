@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-const { connectDb } = require('./src/models');
+const { syncDatabase } = require('./src/models');
 const cors = require('cors');
 
 //Import Rutas
@@ -57,14 +57,18 @@ app.use('/devolution', devolutionRoutes);
 app.use('/motivedevolution', motiveDevolutionRoutes);
 app.use('/states', statesRoutes);
 
+app.use('/', (req, res) => {
+  res.status(200).json('API de Pedivex');
+});
+
 
 const port = process.env.SERVER_PORT || 3000;
 
 const startServer = async () => {
   try {
-    await connectDb();
+    await syncDatabase(); // Sincroniza la base de datos
     app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
+      console.log(`el servidor esta corriendo en: \nhttp://localhost:${port} \nhttp://127.0.0.1:${port}`);
     });
   } catch (error) {
     console.error('Error starting the server:', error);

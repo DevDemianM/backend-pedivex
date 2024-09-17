@@ -1,4 +1,3 @@
-const { Sequelize } = require('sequelize');
 const db = require('../config/database');
 
 const User = require('./users');
@@ -27,9 +26,8 @@ const DevolutionDetails = require('./devolutionDetails');
 const States = require('./states');
 
 // Definición de relaciones
-const connectDb = async () => {
+const syncContraints = async () => {
   try {
-
     // Relación entre permission y roles a través de rol_permission
     Role.belongsToMany(Permission, { through: RolPermission, foreignKey: 'idRole' });
     Permission.belongsToMany(Role, { through: RolPermission, foreignKey: 'idPermission' });
@@ -115,14 +113,14 @@ const connectDb = async () => {
     Devolution.belongsTo(Sale, { foreignKey: 'idSale' });
 
     // Relación entre motiveDevolutions y devolution
-    DevolutionDetails.belongsTo(MotiveDevolution, { 
+    DevolutionDetails.belongsTo(MotiveDevolution, {
       foreignKey: 'idMotive',
       as: 'motiveDevolution' // Alias para la asociación
     });
     MotiveDevolution.hasMany(DevolutionDetails, { foreignKey: 'idMotive' });
 
     // Relación entre DevolutionDetails y devolution
-    Devolution.hasMany(DevolutionDetails, { 
+    Devolution.hasMany(DevolutionDetails, {
       foreignKey: 'idDevolution',
       as: 'details' // Alias para la asociación
     });
@@ -130,18 +128,27 @@ const connectDb = async () => {
 
     // Relación entre productos y DevolutionDetails
     Product.hasOne(DevolutionDetails, { foreignKey: 'idProduct' });
-    DevolutionDetails.belongsTo(Product, { 
+    DevolutionDetails.belongsTo(Product, {
       foreignKey: 'idProduct',
       as: 'product' // Alias para la asociación
     });
     DevolutionDetails.belongsTo(Product, { foreignKey: 'changedProduct' });
 
-    await db.sync({ alter: true }); // Sincroniza la base de datos y recrea las tablas
-    console.log('BD sincronizada y constraints creados');
+    console.log('Constraints creados');
+
   } catch (error) {
+    console.error('Error al sincronizar los constraints ->', error);
+  }
+};
 
+const syncDatabase = async () => {
+  try {
+    //  {force: true } //es para crear las tablas y eliminar las existentes
+    //  {alter: true } //es para actualizar las tablas sin borrarlas, puede generar error si no estan bien sincronizados los modelos
+    await db.sync({ alter: true }); // Sincroniza la base de datos y recrea las tablas
+    console.log('BD sincronizada.');
+  } catch (error) {
     console.error('Error al sincronizar BD ->', error);
-
   }
 };
 
@@ -175,5 +182,6 @@ const models = {
 
 module.exports = {
   models,
-  connectDb
+  syncContraints,
+  syncDatabase
 };
