@@ -97,12 +97,12 @@ const syncDatabase = async () => {
     Bought.belongsTo(Provider, { foreignKey: 'idProvider' });
 
     // Relación entre sales y saleDetails
-    Sale.hasMany(SaleDetail, { foreignKey: 'idSale', as: 'details' });
-    SaleDetail.belongsTo(Sale, { foreignKey: 'idSale', as: 'sale' });
+    Sale.hasMany(SaleDetail, { foreignKey: 'idSale'});
+    SaleDetail.belongsTo(Sale, { foreignKey: 'idSale'});
 
     // Relación entre products y saleDetails
-    Product.hasMany(SaleDetail, { foreignKey: 'idProduct', as: 'details' });
-    SaleDetail.belongsTo(Product, { foreignKey: 'idProduct', as: 'product' });
+    Product.hasMany(SaleDetail, { foreignKey: 'idProduct'});
+    SaleDetail.belongsTo(Product, { foreignKey: 'idProduct'});
 
     // Relación entre users y sales
     User.hasMany(Sale, { foreignKey: 'idUser' });
