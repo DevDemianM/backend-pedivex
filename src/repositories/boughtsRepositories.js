@@ -1,6 +1,7 @@
 const sequelize = require('../config/database');
 const { models } = require('../models');
 const Joi = require('joi');
+const { Op } = require('sequelize');
 
 const getAllBoughts = async () => {
     return await models.Bought.findAll({
@@ -80,6 +81,35 @@ const createBought = async (data) => {
 
             // Devolver los errores de validación
             return { success: false, errors: validationErrors };
+        }
+
+        // Procesa cada detalle de la compra y verifica los insumos
+        for (const detail of details) {
+            const { supplieName, amount, unit } = detail;
+
+            // Verifica si el insumo ya existe
+            let supply = await models.Supply.findOne({
+                where: sequelize.where(
+                    sequelize.fn('LOWER', sequelize.col('name')),
+                    Op.eq,
+                    supplieName.toLowerCase()
+                ),
+                transaction
+            });
+
+            if (supply) {
+                // Si existe, actualiza el stock
+                supply.stock += amount;
+                await supply.save({ transaction });
+            } else {
+                // Si no existe, crea un nuevo insumo
+                await models.Supply.create({
+                    name: supplieName,
+                    stock: amount,
+                    unit: unit,
+                    state: 1 // Puedes cambiar este estado según tus necesidades
+                }, { transaction });
+            }
         }
 
         // Crea los detalles de la compra
