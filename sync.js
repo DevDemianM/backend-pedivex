@@ -33,7 +33,7 @@ async function sync() {
 
     console.log('Se conectó a la base de datos');
 
-    syncDatabase();
+    await syncDatabase();
     
     console.log('Se sincronizaron los modelos');
 
