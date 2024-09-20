@@ -97,12 +97,12 @@ const syncContraints = async () => {
     Bought.belongsTo(Provider, { foreignKey: 'idProvider' });
 
     // Relación entre sales y saleDetails
-    Sale.hasMany(SaleDetail, { foreignKey: 'idSale' });
-    SaleDetail.belongsTo(Sale, { foreignKey: 'idSale' });
+    Sale.hasMany(SaleDetail, { foreignKey: 'idSale', as: 'details' });
+    SaleDetail.belongsTo(Sale, { foreignKey: 'idSale', as: 'sale' });
 
     // Relación entre products y saleDetails
-    Product.hasOne(SaleDetail, { foreignKey: 'idProduct' });
-    SaleDetail.belongsTo(Product, { foreignKey: 'idProduct' });
+    Product.hasMany(SaleDetail, { foreignKey: 'idProduct', as: 'details' });
+    SaleDetail.belongsTo(Product, { foreignKey: 'idProduct', as: 'product' });
 
     // Relación entre users y sales
     User.hasMany(Sale, { foreignKey: 'idUser' });
@@ -143,8 +143,8 @@ const syncContraints = async () => {
 
 const syncDatabase = async () => {
   try {
-    //  {force: true } //es para crear las tablas y eliminar las existentes
-    //  {alter: true } //es para actualizar las tablas sin borrarlas, puede generar error si no estan bien sincronizados los modelos
+    //  {force: true } // es para crear las tablas y eliminar las existentes
+    //  {alter: true } // es para actualizar las tablas sin borrarlas, puede generar error si no están bien sincronizados los modelos
     await db.sync({ alter: true }); // Sincroniza la base de datos y recrea las tablas
     console.log('BD sincronizada.');
   } catch (error) {
@@ -177,8 +177,7 @@ const models = {
   DevolutionDetails,
   MotiveDevolution,
   States
-}
-
+};
 
 module.exports = {
   models,

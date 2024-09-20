@@ -1,9 +1,9 @@
 const { DataTypes } = require('sequelize');
-const db = require('../config/database');
+const sequelize = require('../config/database');
 const sales = require('./sales');
 const products = require('./products');
 
-const saleDetails = db.define('saleDetails', {
+const saleDetails = sequelize.define('saleDetails', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -15,24 +15,26 @@ const saleDetails = db.define('saleDetails', {
     allowNull: false,
     references: {
       model: sales,
-      key: 'id',
-    },
+      key: 'id'
+    }
   },
   idProduct: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model: products,
-      key: 'id',
-    },
+      key: 'id'
+    }
   },
   amount: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   }
 }, {
   tableName: 'saleDetails',
-  timestamps: false,
+  timestamps: false
 });
+
+
 
 module.exports = saleDetails;

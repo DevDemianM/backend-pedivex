@@ -1,6 +1,7 @@
 const { models } = require('../models');
 const generateToken = require('../utils/generateToken');
 
+
 const loginUser = async (data) => {
   try {
 
