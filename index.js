@@ -19,6 +19,7 @@ const requestDetailRoutes = require('./src/routes/requestDetailRoutes');
 const requestRoutes = require('./src/routes/requestRoutes');
 const rolePermissionRoutes = require('./src/routes/rolePermissionRoutes');
 const roleRoutes = require('./src/routes/roleRoutes');
+const saleDetailRoutes = require('./src/routes/saleDetailRoutes');
 const saleRoutes = require('./src/routes/saleRoutes');
 const suppliesRoutes = require('./src/routes/suppliesRoutes');
 const userRoutes = require('./src/routes/userRoutes');
@@ -48,6 +49,7 @@ app.use('/requestDetail', requestDetailRoutes);
 app.use('/request', requestRoutes);
 app.use('/rolePermission', rolePermissionRoutes);
 app.use('/role', roleRoutes);
+app.use('/saleDetail', saleDetailRoutes)
 app.use('/sale', saleRoutes);
 app.use('/supplie', suppliesRoutes);
 app.use('/user', userRoutes);
@@ -61,14 +63,13 @@ app.use('/', (req, res) => {
   res.status(200).json('API de Pedivex');
 });
 
-
 const port = process.env.SERVER_PORT || 3000;
 
 const startServer = async () => {
   try {
     await syncDatabase(); // Sincroniza la base de datos
     app.listen(port, () => {
-      console.log(`el servidor esta corriendo en: \nhttp://localhost:${port} \nhttp://127.0.0.1:${port}`);
+      console.log(`Server is running on port: ${port}`);
     });
   } catch (error) {
     console.error('Error starting the server:', error);
