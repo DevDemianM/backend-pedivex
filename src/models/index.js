@@ -134,9 +134,6 @@ const syncDatabase = async () => {
     });
     DevolutionDetails.belongsTo(Product, { foreignKey: 'changedProduct' });
 
-    console.log('Constraints creados');
-
-
     // {force: true } //es para crear las tablas y eliminar las existentes
     // {alter: true } //es para actualizar las tablas sin borrarlas, puede generar error si no estan bien sincronizados los modelos
     await db.sync({ alter: true });
