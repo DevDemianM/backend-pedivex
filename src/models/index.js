@@ -26,7 +26,7 @@ const DevolutionDetails = require('./devolutionDetails');
 const States = require('./states');
 
 // Definición de relaciones
-const syncContraints = async () => {
+const syncDatabase = async () => {
   try {
     // Relación entre permission y roles a través de rol_permission
     Role.belongsToMany(Permission, { through: RolPermission, foreignKey: 'idRole' });
@@ -136,19 +136,15 @@ const syncContraints = async () => {
 
     console.log('Constraints creados');
 
-  } catch (error) {
-    console.error('Error al sincronizar los constraints ->', error);
-  }
-};
 
-const syncDatabase = async () => {
-  try {
-    //  {force: true } // es para crear las tablas y eliminar las existentes
-    //  {alter: true } // es para actualizar las tablas sin borrarlas, puede generar error si no están bien sincronizados los modelos
-    await db.sync({ alter: true }); // Sincroniza la base de datos y recrea las tablas
+    // {force: true } //es para crear las tablas y eliminar las existentes
+    // {alter: true } //es para actualizar las tablas sin borrarlas, puede generar error si no estan bien sincronizados los modelos
+    await db.sync({ alter: true });
+
     console.log('BD sincronizada.');
+
   } catch (error) {
-    console.error('Error al sincronizar BD ->', error);
+    console.error('Error al sincronizar la BD ->', error);
   }
 };
 
@@ -181,6 +177,5 @@ const models = {
 
 module.exports = {
   models,
-  syncContraints,
   syncDatabase
 };
