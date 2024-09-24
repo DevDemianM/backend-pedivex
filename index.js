@@ -63,14 +63,13 @@ app.use('/', (req, res) => {
   res.status(200).json('API de Pedivex');
 });
 
-
 const port = process.env.SERVER_PORT || 3000;
 
 const startServer = async () => {
   try {
     await syncDatabase(); // Sincroniza la base de datos
     app.listen(port, () => {
-      console.log(`el servidor esta corriendo en: \nhttp://localhost:${port} \nhttp://127.0.0.1:${port}`);
+      console.log(`Server is running on port: ${port}`);
     });
   } catch (error) {
     console.error('Error starting the server:', error);

@@ -23,24 +23,18 @@ const {
   SaleDetail,
   Devolution,
   DevolutionMotive,
-  States
+  States,
+  syncDatabase
 } = require('./src/models');
 
-async function syncDatabase() {
+async function sync() {
   try {
     await sequelize.authenticate();
 
     console.log('Se conectó a la base de datos');
 
-    /*
-      *  Sincroniza todos los modelos
-        {force: true } //es para crear las tablas y eliminar las existentes
-        {alter: true } //es para actualizar las tablas sin borrarlas, puede generar error si no estan bien sincronizados los modelos
-     */
+    await syncDatabase();
     
-    await sequelize.sync({ alter: true });
-    // await sequelize.sync({ alter: true });
-
     console.log('Se sincronizaron los modelos');
 
   } catch (error) {
@@ -54,4 +48,4 @@ async function syncDatabase() {
   }
 }
 
-syncDatabase(); 
+sync(); 

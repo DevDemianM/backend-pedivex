@@ -25,14 +25,14 @@ const loginUser = async (data) => {
       user.mail == data.mail
     ) {
       const token = await generateToken(currentUser.id);
-      return { msg: 'success', token };
+      return { state: 'true', token };
       // res.send({ msg: 'success', token });
     } else {
-      throw new Error('credenciales');
+      return { state: 'false', msg: 'credenciales incorrectas' };
     }
 
   } catch (error) {
-    throw new Error(error);
+    return { state: 'false', error };
   }
 };
 
@@ -47,7 +47,6 @@ const getUserById = async (id) => {
     include: [models.Role]
   });
 };
-
 
 const getAllClientUsers = async () => {
   return await models.User.findAll({

@@ -97,12 +97,12 @@ const syncDatabase = async () => {
     Bought.belongsTo(Provider, { foreignKey: 'idProvider' });
 
     // Relación entre sales y saleDetails
-    Sale.hasMany(SaleDetail, { foreignKey: 'idSale', as: 'details' });
-    SaleDetail.belongsTo(Sale, { foreignKey: 'idSale', as: 'sale' });
+    Sale.hasMany(SaleDetail, { foreignKey: 'idSale'});
+    SaleDetail.belongsTo(Sale, { foreignKey: 'idSale'});
 
     // Relación entre products y saleDetails
-    Product.hasMany(SaleDetail, { foreignKey: 'idProduct', as: 'details' });
-    SaleDetail.belongsTo(Product, { foreignKey: 'idProduct', as: 'product' });
+    Product.hasMany(SaleDetail, { foreignKey: 'idProduct'});
+    SaleDetail.belongsTo(Product, { foreignKey: 'idProduct'});
 
     // Relación entre users y sales
     User.hasMany(Sale, { foreignKey: 'idUser' });
@@ -134,12 +134,9 @@ const syncDatabase = async () => {
     });
     DevolutionDetails.belongsTo(Product, { foreignKey: 'changedProduct' });
 
-    console.log('Constraints creados');
-
-
     // {force: true } //es para crear las tablas y eliminar las existentes
     // {alter: true } //es para actualizar las tablas sin borrarlas, puede generar error si no estan bien sincronizados los modelos
-    await db.sync({ alter: true });
+    await db.sync({ force: true });
 
     console.log('BD sincronizada.');
 
