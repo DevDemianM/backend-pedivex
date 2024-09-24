@@ -26,7 +26,7 @@ const DevolutionDetails = require('./devolutionDetails');
 const States = require('./states');
 
 // Definición de relaciones
-const syncContraints = async () => {
+const syncDatabase = async () => {
   try {
     // Relación entre permission y roles a través de rol_permission
     Role.belongsToMany(Permission, { through: RolPermission, foreignKey: 'idRole' });
@@ -97,12 +97,12 @@ const syncContraints = async () => {
     Bought.belongsTo(Provider, { foreignKey: 'idProvider' });
 
     // Relación entre sales y saleDetails
-    Sale.hasMany(SaleDetail, { foreignKey: 'idSale' });
-    SaleDetail.belongsTo(Sale, { foreignKey: 'idSale' });
+    Sale.hasMany(SaleDetail, { foreignKey: 'idSale'});
+    SaleDetail.belongsTo(Sale, { foreignKey: 'idSale'});
 
     // Relación entre products y saleDetails
-    Product.hasOne(SaleDetail, { foreignKey: 'idProduct' });
-    SaleDetail.belongsTo(Product, { foreignKey: 'idProduct' });
+    Product.hasMany(SaleDetail, { foreignKey: 'idProduct'});
+    SaleDetail.belongsTo(Product, { foreignKey: 'idProduct'});
 
     // Relación entre users y sales
     User.hasMany(Sale, { foreignKey: 'idUser' });
@@ -134,21 +134,14 @@ const syncContraints = async () => {
     });
     DevolutionDetails.belongsTo(Product, { foreignKey: 'changedProduct' });
 
-    console.log('Constraints creados');
+    // {force: true } //es para crear las tablas y eliminar las existentes
+    // {alter: true } //es para actualizar las tablas sin borrarlas, puede generar error si no estan bien sincronizados los modelos
+    await db.sync({ force: true });
 
-  } catch (error) {
-    console.error('Error al sincronizar los constraints ->', error);
-  }
-};
-
-const syncDatabase = async () => {
-  try {
-    //  {force: true } //es para crear las tablas y eliminar las existentes
-    //  {alter: true } //es para actualizar las tablas sin borrarlas, puede generar error si no estan bien sincronizados los modelos
-    await db.sync({ alter: true }); // Sincroniza la base de datos y recrea las tablas
     console.log('BD sincronizada.');
+
   } catch (error) {
-    console.error('Error al sincronizar BD ->', error);
+    console.error('Error al sincronizar la BD ->', error);
   }
 };
 
@@ -177,11 +170,9 @@ const models = {
   DevolutionDetails,
   MotiveDevolution,
   States
-}
-
+};
 
 module.exports = {
   models,
-  syncContraints,
   syncDatabase
 };

@@ -1,16 +1,40 @@
 const sequelize = require('./src/config/database');
-const { syncContraints } = require('./src/models');
 
+const {
+  User,
+  Role,
+  Permission,
+  RolPermission,
+  ProductionOrder,
+  ProductionOrderDetail,
+  Product,
+  ProductCategory,
+  Request,
+  RequestDetail,
+  Datasheet,
+  DatasheetDetail,
+  Mass,
+  MassDetail,
+  Supply,
+  Bought,
+  BoughtDetail,
+  Provider,
+  Sale,
+  SaleDetail,
+  Devolution,
+  DevolutionMotive,
+  States,
+  syncDatabase
+} = require('./src/models');
 
-async function syncDatabase() {
+async function sync() {
   try {
     await sequelize.authenticate();
 
     console.log('Se conectó a la base de datos');
 
-    // Sincroniza todos los constraitns
-    await syncContraints();
-
+    await syncDatabase();
+    
     console.log('Se sincronizaron los modelos');
 
   } catch (error) {
@@ -20,8 +44,8 @@ async function syncDatabase() {
   } finally {
 
     await sequelize.close();
-  
+
   }
 }
 
-syncDatabase(); 
+sync(); 
