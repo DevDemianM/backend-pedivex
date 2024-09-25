@@ -49,6 +49,7 @@ const createProductionOrder = async (data) => {
   }
 };
 
+/* DESCOMENTAR PARA TRABAJAR EN LA FUNCIONALIDAD DE CAMBIO DE ESTADO Y RESTA DE INSUMOS
 const updateProductionOrder = async (id, updatedOrder) => {
   const transaction = await sequelize.transaction(); 
 
@@ -86,8 +87,13 @@ const updateProductionOrder = async (id, updatedOrder) => {
     throw new Error(`Error al actualizar la orden: ${error.message}`);
   }
 };
+*/
 
-
+const updateProductionOrder = async (id, data) => {
+  return await models.ProductionOrder.update(data, {
+      where: { id }
+  });
+};
 
 const deleteProductionOrder = async (id) => {
   return await models.ProductionOrder.destroy({
