@@ -52,6 +52,7 @@ const updateRequest = async (id, data) => {
         where: { id }
     });
 };
+  
 
 const deleteRequest = async (id) => {
     return await models.Request.destroy({

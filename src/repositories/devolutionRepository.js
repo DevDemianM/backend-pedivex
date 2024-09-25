@@ -27,25 +27,41 @@ const getDevolutionById = async (id) => {
   return await models.Devolution.findByPk(id, {
     include: [
       {
-        model: models.MotiveDevolution
-      },
-      {
-        model: models.Sale,
+        model: models.DevolutionDetails, // Modelo para los detalles de devolución
+        as: 'details', // Alias usado en el primer código
         include: [
           {
-            model: models.SaleDetail,
+            model: models.Product, // Incluir productos asociados
+            as: 'product', // Alias para productos
+            attributes: ['name']
+          },
+          {
+            model: models.MotiveDevolution, // Incluir motivos de devolución asociados
+            as: 'motiveDevolution', // Alias para motivos de devolución
+          },
+        ],
+      },
+      {
+        model: models.Sale, // Incluir ventas asociadas
+        as: 'sale', // Alias para la venta (si lo necesitas)
+        include: [
+          {
+            model: models.SaleDetail, // Incluir detalles de la venta
+            as: 'saleDetails', // Alias para detalles de la venta (ajústalo según lo que uses en tu modelo)
             include: [
               {
-                model: models.Product,
-                attributes: ['name']
-              }
-            ]
-          }
-        ]
-      }
-    ]
+                model: models.Product, // Incluir productos dentro de los detalles de la venta
+                as: 'product', // Alias para productos
+                attributes: ['name'],
+              },
+            ],
+          },
+        ],
+      },
+    ],
   });
-}
+};
+
 
 const createDevolution = async (data) => {
   const transaction = await sequelize.transaction();
