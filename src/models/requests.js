@@ -27,7 +27,8 @@ const requests = sequelize.define('requests', {
   },
   state: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
+    defaultValue: 4,
   },
   deadLine: {
     type: DataTypes.DATE,
