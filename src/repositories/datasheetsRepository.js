@@ -98,29 +98,21 @@ const createDatasheet = async (data) => {
 const updateDatasheet = async (id, data) => {
   const transaction = await sequelize.transaction();
   try {
-    const currentDatasheet = await getDatasheetById(id);
-
+    // Deserializamos el contendido de "data"
     const { idMass, startDate, endDate, details } = data;
 
-    console.log('\nFicha que llega a update: ', data);
+    console.log('\nFicha que llega: ', data);
 
-    // Asegúrate de usar el where para actualizar el registro correcto
-    const datasheet = await models.Datasheet.update(
-      {
-        idMass,
-        startDate,
-        endDate
-      },
-      { 
-        where: { id }, // Incluye la condición where para actualizar el registro correcto
-        transaction 
-      }
-    );
+    const currentDatasheet = await models.Datasheet.update(id, {
+      idMass,
+      startDate,
+      endDate
+    }, { transaction });
 
     // Ahora mapea los detalles, asegurándote de que se incluyen todos los campos necesarios
     const datasheetDetails = details.map(detail => ({
       ...detail,
-      idDatasheet: id // Asegúrate de incluir idDatasheet en cada detalle
+      idDatasheet: id
     }));
 
     // Elimina los detalles actuales y agrega los nuevos (si es necesario)
@@ -130,10 +122,11 @@ const updateDatasheet = async (id, data) => {
 
     await transaction.commit();
 
-    return { success: true, datasheet };
+    return { success: true, currentDatasheet };
+
   } catch (error) {
     await transaction.rollback();
-    console.error('Error al actualizar Datasheet y sus detalles:', error);
+    console.error('Error al actualizar ficha técnica: ', error);
     return { success: false, error };
   }
 };

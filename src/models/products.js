@@ -10,6 +10,7 @@ const products = db.define('products', {
     allowNull: false,
     autoIncrement: true
   },
+  // *** Este campo se va despues de la entrega
   idDatasheet: {
     type: DataTypes.INTEGER,
     allowNull: false,

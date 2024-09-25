@@ -1,4 +1,4 @@
-const { Op, JSON } = require('sequelize');
+const { Op } = require('sequelize');
 const { models } = require('../models');
 const sequelize = require('../config/database');
 const datasheetsRepository = require('./datasheetsRepository');
@@ -43,7 +43,7 @@ const findAllProducts = async () => {
         ]
       }
     ]
-  });
+  })
 };
 
 const findProductById = async (id) => {
@@ -86,7 +86,7 @@ const findProductById = async (id) => {
         ]
       }
     ]
-  });
+  })
 };
 
 const createProduct = async (data) => {
@@ -126,9 +126,10 @@ const createProduct = async (data) => {
       price,
       image,
       state
-    });
+    }, { transaction });
 
-    return await findProductById(currentProduct.id);
+    await transaction.commit();
+    return { success: true, currentProduct };
 
   } catch (error) {
     await transaction.rollback();
@@ -137,95 +138,56 @@ const createProduct = async (data) => {
   }
 };
 
-
 const updateProduct = async (id, data) => {
-
-  console.log('\ndata :', data);
-  console.log('\ndata.datasheet :', data.datasheet);
-  console.log('\ndata.datasheet.details :', data.datasheet.details);
+  console.log('\nid: ', id, '\ndata: ', data);
 
   const transaction = await sequelize.transaction();
 
   try {
-    // Se busca el producto actual por ID
-    const product = await findProductById(id);
+    // * Buscar el producto con eager loading para incluir la ficha técnica
+    let product = await findProductById(id);
+    product = product.dataValues;
+    console.log('\nproduct: ', product);
 
-    let updatedProduct = null;
+    // * Buscar la ficha técnica del producto
+    let oldDatasheet = await models.Datasheet.findByPk(product.idDatasheet, { transaction });
+    oldDatasheet = oldDatasheet.dataValues;
+    console.log('\nold datasheet: ', oldDatasheet);
 
-    // Verificar si se deben actualizar los datos básicos del producto
-    if (product.name !== data.name ||
-      product.stock !== data.stock ||
-      product.price !== data.price ||
-      product.state !== data.state) {
+    // * Cerrar la antigua ficha técnica
+    const closedDatasheets = await models.Datasheet.update({
+      endDate: Date.now()
+    }, {
+      where: { id: product.idDatasheet },
+      transaction
+    });
+    console.log('\nclosed datasheet: ', closedDatasheets);
 
-      updatedProduct = await models.Product.update(id, {
-        name: data.name,
-        stock: data.stock,
-        price: data.price,
-        state: data.state
-      });
-    }
-    // Verificar si hay cambios en la ficha técnica
-    if (data.datasheet) {
+    // * Crear la nueva ficha técnica
+    const newDatasheet = await datasheetsRepository.createDatasheet({
+      idMass: oldDatasheet.idMass,
+      details: data.datasheet.details
+    }, { transaction });
+    console.log('\nnew datasheet: ', newDatasheet);
 
-      const toUpdateDatasheet = await datasheetsRepository.getDatasheetById(product.idDatasheet);
+    // * Actualizar el producto
+    const updatedProduct = await models.Product.update({
+      idCategorie: product.idCategorie,
+      idDatasheet: newDatasheet.datasheet.id,
+      name: data.name,
+      stock: data.stock,
+      price: data.price,
+      state: data.state
+    }, {
+      where: { id: product.id },
+      transaction
+    });
+    console.log('\nupdated product: ', updatedProduct);
 
-      let currentDatasheet = toUpdateDatasheet.dataValues;
-
-      console.log('\nFicha que se va a actualizar: ', currentDatasheet);
-      console.log('\nDetalles de la ficha que se va a actualizar: ', currentDatasheet.datasheetDetails);
-      let datasheetDetailIndex = 0;
-      currentDatasheet.datasheetDetails.map(detail => {
-        console.log(`\nDetalle #${datasheetDetailIndex++}: ${detail.dataValues}`);
-      })
-
-      // Si hay cambios en los detalles de la ficha, se crea una nueva ficha técnica
-      if (JSON.stringify(data.datasheet.details) !== JSON.stringify(currentDatasheet.DatasheetDetails)) {
-
-        // Se finaliza la ficha técnica actual
-
-        // await models.Datasheet.update(currentDatasheet.id,
-        //   { endDate: Date.now() },
-        //   { where: { id: currentDatasheet.id }, transaction }
-        // );
-
-        const oldDatasheet = await datasheetsRepository.updateDatasheet(currentDatasheet.id, {
-          idMass: currentDatasheet.idMass, 
-          startDate: currentDatasheet.startDate, 
-          endDate: Date.now(), 
-          details: currentDatasheet.DatasheetDetails
-        });
-
-        console.log('\nFicha vieja: ', oldDatasheet);
-
-        /// Se crea la ficha nueva con los datos de llegada
-        const toCreateDatasheet = {
-          idMass: currentDatasheet.idMass,
-          details: data.datasheet
-        };
-
-        console.log('\nFicha a crear: ', toCreateDatasheet);
-        
-
-        // Se crea una nueva ficha técnica
-        const newDatasheet = await datasheetsRepository.createDatasheet(toCreateDatasheet);
-
-        console.log('\nFicha nueva: ', newDatasheet);
-
-
-        updateProduct = await models.Product.update( id, {
-          ...data,
-          idDatasheet: newDatasheet.id
-        });
-
-        console.log('\nProducto actualizado', updateProduct);
-        
-      }
-    }
+    const productUpdated = await findProductById(id);
 
     await transaction.commit();
-    return { success: true, updatedProduct };
-
+    return { success: true, productUpdated };
   } catch (error) {
     await transaction.rollback();
     console.error('\nError al actualizar el producto: ', error);
@@ -234,160 +196,143 @@ const updateProduct = async (id, data) => {
 };
 
 
+
 // const updateProduct = async (id, data) => {
-//   console.log('\ndata :', data);
-//   console.log('\ndata.datasheet :', data.datasheet);
-//   console.log('\ndata.datasheet.details :', data.datasheet.details);
+
+//   console.log('\nid: ', id, '\ndata: ', data);
+
 
 //   const transaction = await sequelize.transaction();
 
 //   try {
-//     // Buscar el producto actual por ID
-//     const product = await findProductById(id);
+//     // *Se busca el producto a actualizar
+//     let product = await findProductById(id);
+//     product = product.dataValues;
+//     console.log('\nproduct: ', product);
 
-//     // Verificar si se deben actualizar los datos básicos del producto
-//     if (product.name !== data.name ||
-//         product.stock !== data.stock ||
-//         product.price !== data.price ||
-//         product.state !== data.state) {
 
-//       await models.Product.update(
-//         {
-//           name: data.name,
-//           stock: data.stock,
-//           price: data.price,
-//           state: data.state
-//         },
-//         { where: { id }, transaction }
-//       );
-//     }
+//     // *Se busca la ficha del producto a actualizar
+//     let oldDatasheet = await models.Datasheet.findByPk(product.idDatasheet);
+//     oldDatasheet = oldDatasheet.dataValues;
+//     console.log('\nold datasheet: ', oldDatasheet);
 
-//     // Verificar si hay cambios en la ficha técnica
-//     if (data.datasheet) {
-//       const currentDatasheet = await datasheetsRepository.getDatasheetById(product.idDatasheet);
-      
-//       // Comparar los detalles de la ficha técnica
-//       if (data.datasheet.details != currentDatasheet.DatasheetDetails) {
 
-//         // Finalizar la ficha técnica actual
-//         await datasheetsRepository.updateDatasheet(
-//           currentDatasheet.id, 
-//           {
-//             idMass: currentDatasheet.idMass,
-//             startDate: currentDatasheet.startDate,
-//             endDate: Date.now(),
-//             details: currentDatasheet.datasheetDetails
-//           },
-//           { transaction }
-//         );
+//     // *Verificar si el cambio es de la información basica y los detalles
+//     // if (
+//     //   (product.name !== data.name ||
+//     //     product.stock !== data.stock ||
+//     //     product.price !== data.price ||
+//     //     product.state !== data.state) &&
+//     //   (JSON.stringify(data.datasheet.details) !==
+//     //     JSON.stringify(currentDatasheet.DatasheetDetails))
+//     // ) {
 
-//         // Crear una nueva ficha técnica
-//         const newDatasheet = await datasheetsRepository.createDatasheet(
-//           {
-//             idMass: currentDatasheet.idMass,
-//             details: data.datasheet.details
-//           },
-//           { transaction }
-//         );
+//     let logproduct = await findProductById(id);
+//     console.log('prod 1', logproduct.dataValues);
 
-//         // Actualizar el producto con la nueva ficha técnica
-//         await models.Product.update(
-//           { idDatasheet: newDatasheet.id },
-//           { where: { id }, transaction }
-//         );
+//     // *Se cierra la antigua ficha
+//     const closedDatasheets = await models.Datasheet.update({
+//       idMass: oldDatasheet.idMass,
+//       startDate: oldDatasheet.startDate,
+//       endDate: Date.now()
+//     }, {
+//       where: {
+//         id: product.idDatasheet
 //       }
-//     }
+//     }, { transaction });
+//     console.log('\nclosed datasheet: ', closedDatasheets);
+    
+//     logproduct = await findProductById(id);
+//     console.log('prod 2', logproduct);
 
-//     await transaction.commit();
-//     return { success: true };
+//     // *Se crea la nueva ficha
+//     const newDatasheet = await datasheetsRepository.createDatasheet({
+//       idMass: oldDatasheet.idMass,
+//       details: data.datasheet.details
+//     });
+//     console.log('\nnew datasheet: ', newDatasheet);
 
-//   } catch (error) {
-//     await transaction.rollback();
-//     console.error('\nError al actualizar el producto: ', error);
-//     return { success: false, error };
-//   }
-// };
+//     logproduct = await findProductById(id);
+//     console.log('prod 3', logproduct);
 
-
-// const updateProduct = async (id, data) => {
-//   console.log('\ndata :', data);
-//   console.log('\ndata.datasheet :', data.datasheet);
-//   console.log('\ndata.datasheet.details :', data.datasheet.details);
-
-//   const transaction = await sequelize.transaction();
-
-//   try {
-//     // Buscar el producto actual por ID
-//     const product = await findProductById(id);
-
-//     // Verificar si se deben actualizar los datos básicos del producto
-//     if (product.name !== data.name ||
-//         product.stock !== data.stock ||
-//         product.price !== data.price ||
-//         product.state !== data.state) {
-
-//       await models.Product.update(
-//         {
-//           name: data.name,
-//           stock: data.stock,
-//           price: data.price,
-//           state: data.state
-//         },
-//         { where: { id }, transaction }
-//       );
-//     }
-
-//     // Verificar si hay cambios en la ficha técnica
-//     if (data.datasheet) {
-//       const currentDatasheet = await datasheetsRepository.getDatasheetById(product.idDatasheet);
-      
-//       // Comparar los detalles de la ficha técnica
-//       const currentDetails = currentDatasheet.DatasheetDetails.map(detail => ({
-//         idSupplie: detail.idSupplie,
-//         amount: detail.amount,
-//         unit: detail.unit
-//       }));
-
-//       const newDetails = data.datasheet.details.map(detail => ({
-//         idSupplie: detail.idSupplie,
-//         amount: detail.amount,
-//         unit: detail.unit
-//       }));
-
-//       // Si los detalles son diferentes, actualizamos la ficha técnica
-//       if (JSON.stringify(currentDetails) !== JSON.stringify(newDetails)) {
-//         // Finalizar la ficha técnica actual
-//         await datasheetsRepository.updateDatasheet(
-//           currentDatasheet.id, 
-//           {
-//             idMass: currentDatasheet.idMass,
-//             startDate: currentDatasheet.startDate,
-//             endDate: new Date(), // Usar Date.now() para finalizar la ficha técnica actual
-//             details: currentDetails
-//           },
-//           { transaction }
-//         );
-
-//         // Crear una nueva ficha técnica
-//         const newDatasheet = await datasheetsRepository.createDatasheet(
-//           {
-//             idMass: data.datasheet.idMass || currentDatasheet.idMass,
-//             details: newDetails
-//           },
-//           { transaction }
-//         );
-
-//         // Actualizar el producto con la nueva ficha técnica
-//         await models.Product.update(
-//           { idDatasheet: newDatasheet.id },
-//           { where: { id }, transaction }
-//         );
+//     // *Se actualiza la tabla de la info general del producto
+//     const updatedProduct = await models.Product.update({
+//       idCategorie: product.idCategorie,
+//       idDatasheet: newDatasheet.id,
+//       name: data.name,
+//       stock: data.stock,
+//       price: data.price,
+//       state: data.state
+//     }, {
+//       where: {
+//         id: product.id
 //       }
-//     }
+//     }, { transaction });
+//     console.log('\nupdated product: ', updatedProduct);
+    
+//     logproduct = await findProductById(id);
+//     console.log('prod 4', logproduct);
 
-//     await transaction.commit();
-//     return { success: true };
+//     return { success: true, msg: 'insano' };
 
+
+
+//     // };
+
+//     // // *Verificar si se deben actualizar los datos básicos del producto
+//     // if (product.name !== data.name ||
+//     //   product.stock !== data.stock ||
+//     //   product.price !== data.price ||
+//     //   product.state !== data.state) {
+
+//     //   const updatedProduct = await models.Product.update(id, {
+//     //     name: data.name,
+//     //     stock: data.stock,
+//     //     price: data.price,
+//     //     state: data.state
+//     //   }, { transaction });
+
+//     //   return { success: true, msg: 'producto actualizado', updatedProduct }
+//     // };
+
+//     // *Si hay cambios en los detalles de la ficha, se crea una nueva ficha técnica
+//     // if (JSON.stringify(data.datasheet.details) !== JSON.stringify(currentDatasheet.DatasheetDetails)) {
+
+//     //   let currentDatasheet = await datasheetsRepository.getDatasheetById(product.idDatasheet);
+//     //   currentDatasheet = currentDatasheet.dataValues;
+
+//     //   const oldDatasheet = await datasheetsRepository.updateDatasheet(currentDatasheet.id, {
+//     //     idMass: currentDatasheet.idMass,
+//     //     startDate: currentDatasheet.startDate,
+//     //     endDate: Date.now(),
+//     //     details: currentDatasheet.DatasheetDetails
+//     //   });
+
+//     //   console.log('\nAntigua ficha: ', oldDatasheet);
+
+//     //   ///* Se crea la ficha nueva con los datos de llegada
+//     //   const toCreateDatasheet = {
+//     //     idMass: currentDatasheet.idMass,
+//     //     details: data.datasheet
+//     //   };
+
+//     //   console.log('\nFicha a crear: ', toCreateDatasheet);
+
+
+//     //   // *Se crea una nueva ficha técnica
+//     //   const newDatasheet = await datasheetsRepository.createDatasheet(toCreateDatasheet);
+
+//     //   console.log('\nFicha nueva: ', newDatasheet);
+
+
+//     //   const updatedProduct = await models.Product.update(id, {
+//     //     ...data,
+//     //     idDatasheet: newDatasheet.id
+//     //   });
+
+//     //   console.log('\nProducto actualizado', updatedProduct);
+
+//     // };
 //   } catch (error) {
 //     await transaction.rollback();
 //     console.error('\nError al actualizar el producto: ', error);

@@ -9,6 +9,14 @@ const datasheets = db.define('datasheets', {
     allowNull: false,
     autoIncrement: true
   },
+    // idProduct: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false,
+  //   references: {
+  //     model: models.Product,
+  //     key: 'id',
+  //   }
+  // },
   idMass: {
     type: DataTypes.INTEGER,
     allowNull: false,
