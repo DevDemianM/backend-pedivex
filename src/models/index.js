@@ -136,7 +136,7 @@ const syncDatabase = async () => {
 
     // {force: true } //es para crear las tablas y eliminar las existentes
     // {alter: true } //es para actualizar las tablas sin borrarlas, puede generar error si no estan bien sincronizados los modelos
-    await db.sync({ force: true });
+    await db.sync({ alter: true });
 
     console.log('BD sincronizada.');
 
