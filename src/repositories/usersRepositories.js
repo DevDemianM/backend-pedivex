@@ -81,6 +81,18 @@ const deleteUser = async (id) => {
 };
 
 const updateUserState = async (id, state) => {
+  const user = await models.User.findByPk(id, {
+    include: [models.Role]
+  });
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  if (user.role.role.toLowerCase() === 'administrador') {
+    throw new Error('The user with role "administrador" cannot be change state');
+  }
+
   return await models.User.update({ state }, {
     where: { id }
   });
