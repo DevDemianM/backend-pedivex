@@ -1,13 +1,15 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
+// Función para generar token
 const generateToken = (id) => {
   return new Promise((resolve, reject) => {
     jwt.sign(
-      { id }, // Payload
-      process.env.JWT_SECRET, // Clave secreta
+      { id },
+      process.env.JWT_SECRET,
       {
-        algorithm: 'HS256', // Algoritmo especificado
-        expiresIn: '1h' // Tiempo de expiración opcional
+        algorithm: 'HS256',
+        expiresIn: '1h'
       },
       (err, token) => {
         if (err) {
@@ -20,4 +22,24 @@ const generateToken = (id) => {
   });
 };
 
-module.exports = generateToken;
+// Función para verificar token
+const verifyToken = (token) => {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Token válido:", decoded);
+    return decoded;
+  } catch (error) {
+    console.error("Token inválido:", error.message);
+    return null;
+  }
+};
+
+// Ejemplo de uso
+generateToken(123).then(token => {
+  console.log("Token generado:", token);
+  
+  // Verifica el token inmediatamente después de generarlo
+  verifyToken(token);
+}).catch(err => {
+  console.error(err.message);
+});
