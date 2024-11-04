@@ -21,7 +21,7 @@ const getMassById = async (id) => {
   return await models.Mass.findByPk(id, {
     include: [
       {
-        model: models.BoughtDetail,
+        model: models.MassDetail,
         include: [
           {
             model: models.Supply,

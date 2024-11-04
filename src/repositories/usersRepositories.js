@@ -36,6 +36,18 @@ const loginUser = async (data) => {
   }
 };
 
+const findUserByEmail = async (email) => {
+  return await users.findOne({ where: { mail: email } });
+};
+
+const updateUserRecovery = async (user) => {
+  return await user.save();
+};
+
+const findUserByToken = async (token) => {
+  return await users.findOne({ where: { resetToken: token, tokenExpiration: { [Op.gt]: new Date() } } });
+};
+
 const getAllUsers = async () => {
   return await models.User.findAll({
     include: [models.Role]
@@ -102,6 +114,9 @@ module.exports = {
   loginUser,
   getAllUsers,
   getUserById,
+  findUserByEmail,
+  updateUserRecovery,
+  findUserByToken,
   getAllClientUsers,
   getAllEmployeeUsers,
   createUser,
