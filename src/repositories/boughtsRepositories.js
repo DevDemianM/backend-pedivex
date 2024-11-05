@@ -99,7 +99,8 @@ const createBought = async (data) => {
 
             if (supply) {
                 // Si existe, actualiza el stock
-                supply.stock += amount;
+                let cantidad = parseInt(amount)
+                supply.stock += cantidad;
                 await supply.save({ transaction });
             } else {
                 // Si no existe, crea un nuevo insumo
@@ -159,12 +160,7 @@ const boughtDetailSchema = Joi.object({
         'string.valid': 'Unit must be one of the following: gr, lb, ml, unit',
         'any.required': 'Unit is required'
     }),
-    costUnit: Joi.number().min(0).required().messages({
-        'number.base': 'CostUnit must be a number',
-        'number.min': 'CostUnit must be a non-negative number',
-        'any.required': 'CostUnit is required'
-    }),
-    subtotal: Joi.number().min(0).required().messages({
+    cost: Joi.number().min(0).required().messages({
         'number.base': 'Subtotal must be a number',
         'number.min': 'Subtotal must be a non-negative number',
         'any.required': 'Subtotal is required'

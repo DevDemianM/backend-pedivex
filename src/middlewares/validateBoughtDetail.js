@@ -18,13 +18,9 @@ const validateBoughtDetails = [
         .isIn(['gr', 'lb', 'ml', 'unit']).withMessage('Unit must be one of the following: gr, lb, ml, unit')
         .notEmpty().withMessage('Unit is required'),
 
-    body('costUnit')
-        .isDecimal({ min: 0 }).withMessage('CostUnit must be a non-negative decimal')
-        .notEmpty().withMessage('CostUnit is required'),
-
-    body('subtotal')
+    body('cost')
         .isDecimal({ min: 0 }).withMessage('Subtotal must be a non-negative decimal')
-        .notEmpty().withMessage('Subtotal is required'),
+        .notEmpty().withMessage('Cost is required'),
 
     body('state')
         .isInt({ min: 1, max: 5 }).withMessage('State must be an integer between 1 and 5')
