@@ -34,12 +34,17 @@ const verifyToken = (token) => {
   }
 };
 
-// Ejemplo de uso
-generateToken(123).then(token => {
-  console.log("Token generado:", token);
+// // Ejemplo de uso
+// generateToken(123).then(token => {
+//   console.log("Token generado:", token);
   
-  // Verifica el token inmediatamente después de generarlo
-  verifyToken(token);
-}).catch(err => {
-  console.error(err.message);
-});
+//   // Verifica el token inmediatamente después de generarlo
+//   verifyToken(token);
+// }).catch(err => {
+//   console.error(err.message);
+// });
+
+module.exports = {
+  generateToken,
+  verifyToken
+}
