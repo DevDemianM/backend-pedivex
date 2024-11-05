@@ -29,6 +29,8 @@ const clientsRoutes = require('./src/routes/clientsRoutes');
 const employeesRoutes = require('./src/routes/employeeRoutes');
 const statesRoutes = require('./src/routes/statesRoutes');
 
+
+
 dotenv.config();
 
 const app = express();
@@ -59,6 +61,7 @@ app.use('/devolution', devolutionRoutes);
 app.use('/motivedevolution', motiveDevolutionRoutes);
 app.use('/states', statesRoutes);
 
+
 app.use('/', (req, res) => {
   res.status(200).json('API de Pedivex');
 });
@@ -70,6 +73,7 @@ const startServer = async () => {
     await syncDatabase(); // Sincroniza la base de datos
     app.listen(port, () => {
       console.log(`Server is running on port: ${port}`);
+      console.log(`jp gay`)
     });
   } catch (error) {
     console.error('Error starting the server:', error);

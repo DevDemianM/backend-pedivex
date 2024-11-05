@@ -90,6 +90,24 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const requestPasswordReset = async (req, res) => {
+  try {
+    await userService.requestPasswordReset(req.body.mail);
+    res.status(200).send('Email de recuperación enviado');
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    await userService.resetPassword(req.body.token, req.body.password);
+    res.status(200).send('Contraseña cambiada exitosamente');
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
@@ -98,6 +116,8 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
+  requestPasswordReset,
+  resetPassword,
   updateUserState
 };
 

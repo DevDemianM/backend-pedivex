@@ -11,7 +11,6 @@ async function sync() {
     await syncDatabase();
 
     console.log('Se sincronizaron los modelos');
-
   } catch (error) {
 
     console.error('No se pudieron crear los modelos: ', error);
