@@ -13,41 +13,7 @@ const getRequestById = async (id) => {
     });
 };
 
-/* ESTE BLOQUE FUNCIONA PERO SIN EL CALCULO DE TOTAL 
-const createRequest = async (data) => {
-    const transaction = await sequelize.transaction();
-    try {
-        const { creationDate, idUser, total, state, deadLine, stateDate, details } = data;
 
-        // Crea la solicitud
-        const request = await models.Request.create({
-            creationDate,
-            idUser,
-            total,
-            state,
-            deadLine,
-            stateDate
-        }, { transaction });
-
-        // Crea los detalles de la solicitud
-        const requestDetails = details.map(detail => ({
-            ...detail,
-            idRequest: request.id
-        }));
-        await models.RequestDetail.bulkCreate(requestDetails, { transaction });
-
-        // Confirma la transacción
-        await transaction.commit();
-
-        return { success: true, request };
-    } catch (error) {
-        // Revertir la transacción en caso de error
-        await transaction.rollback();
-        console.error('Error al crear la solicitud y detalles:', error);
-        return { success: false, error };
-    }
-};
-*/
 
 const createRequest = async (data) => {
     const transaction = await sequelize.transaction();
@@ -111,11 +77,88 @@ const createRequest = async (data) => {
   
 
 const updateRequest = async (id, data) => {
-    return await models.Request.update(data, {
-        where: { id }
+  const transaction = await sequelize.transaction();
+  try {
+    // Obtener el pedido existente y sus detalles
+    const existingRequest = await models.Request.findByPk(id, {
+      include: [{ model: models.RequestDetail, as: 'requestDetails' }],
+      transaction
     });
+
+    if (!existingRequest) {
+      throw new Error('Pedido no encontrado');
+    }
+
+    // Actualizar los campos del pedido principal
+    await models.Request.update(
+      {
+        idUser: data.idUser,
+        total: data.total,
+        state: data.state,
+        creationDate: data.creationDate,
+        deadLine: data.deadLine,
+        stateDate: data.stateDate,
+      },
+      { where: { id }, transaction }
+    );
+
+    // Separar detalles existentes de los nuevos detalles
+    const existingDetails = data.requestDetails.filter(detail => detail.id);
+    const newDetails = data.requestDetails.filter(detail => !detail.id);
+
+    // Obtener los IDs de los detalles enviados en la solicitud
+    const updatedDetailIds = existingDetails.map(detail => detail.id);
+
+    // Eliminar detalles que existen en la base de datos pero no en la solicitud
+    const detailsToDelete = existingRequest.requestDetails.filter(
+      dbDetail => !updatedDetailIds.includes(dbDetail.id)
+    );
+
+    for (const detail of detailsToDelete) {
+      await models.RequestDetail.destroy({
+        where: { id: detail.id },
+        transaction
+      });
+    }
+
+    // Actualizar detalles existentes
+    for (const detail of existingDetails) {
+      await models.RequestDetail.update(
+        {
+          idProduct: detail.idProduct,
+          quantity: detail.quantity,
+          price: detail.price,
+          subtotal: detail.subtotal,
+        },
+        { where: { id: detail.id }, transaction }
+      );
+    }
+
+    // Crear nuevos detalles
+    if (newDetails.length > 0) {
+      const newDetailRecords = newDetails.map(detail => ({
+        idRequest: id,
+        idProduct: detail.idProduct,
+        quantity: detail.quantity,
+        price: detail.price,
+        subtotal: detail.subtotal,
+      }));
+      await models.RequestDetail.bulkCreate(newDetailRecords, { transaction });
+    }
+
+    // Confirmar la transacción
+    await transaction.commit();
+    return { success: true, message: "Pedido actualizado correctamente" };
+  } catch (error) {
+    // Si hay un error, revertir la transacción
+    if (!transaction.finished) {
+      await transaction.rollback();
+    }
+    throw new Error("Error al actualizar el pedido: " + error.message);
+  }
 };
-  
+
+
 
 const deleteRequest = async (id) => {
     return await models.Request.destroy({
