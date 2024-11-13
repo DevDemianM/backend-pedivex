@@ -49,51 +49,95 @@ const createProductionOrder = async (data) => {
   }
 };
 
-/* DESCOMENTAR PARA TRABAJAR EN LA FUNCIONALIDAD DE CAMBIO DE ESTADO Y RESTA DE INSUMOS
-const updateProductionOrder = async (id, updatedOrder) => {
-  const transaction = await sequelize.transaction(); 
 
+const updateProductionOrder = async (id, data) => {
+  const transaction = await sequelize.transaction();
   try {
-    // Obtener la orden original
+    // Obtener la orden de producción existente y sus detalles
     const existingOrder = await models.ProductionOrder.findByPk(id, {
-      include: [{ model: models.ProductionOrderDetail }]
+      include: [{ model: models.ProductionOrderDetail, as: 'productionOrderDetails' }],
+      transaction
     });
 
-    // Verificación de si hubo un cambio de estado a "En producción"
-    if ((existingOrder.state !== updatedOrder.state) && updatedOrder.state === 6) {
-      // Obtener los detalles de la orden de producción
-      const productionOrderDetails = existingOrder.productionOrderDetails;
-
-      // Actualizar el stock de los productos y restar insumos
-      productionOrderDetails.forEach(detail => {
-        
-      });
-
+    if (!existingOrder) {
+      throw new Error('Orden de producción no encontrada');
     }
 
-    // Actualizar la orden de producción con los nuevos datos
-    await models.ProductionOrder.update(updatedOrder, {
+    // Verificar si el estado está cambiando a "Terminado" (id 7)
+    const isStatusChangingToFinished = data.state === 7 && existingOrder.state !== 7;
+
+    // Actualizar la orden de producción
+    await models.ProductionOrder.update(data, {
       where: { id },
       transaction
     });
 
+    // Separar detalles existentes de los nuevos detalles
+    const existingDetails = data.productionOrderDetails.filter(detail => detail.id);
+    const newDetails = data.productionOrderDetails.filter(detail => !detail.id);
+
+    // Obtener los IDs de los detalles enviados en la solicitud
+    const updatedDetailIds = existingDetails.map(detail => detail.id);
+
+    // Eliminar detalles que existen en la base de datos pero no en la solicitud
+    const detailsToDelete = existingOrder.productionOrderDetails.filter(
+      dbDetail => !updatedDetailIds.includes(dbDetail.id)
+    );
+
+    for (const detail of detailsToDelete) {
+      await models.ProductionOrderDetail.destroy({
+        where: { id: detail.id },
+        transaction
+      });
+    }
+
+    // Actualizar detalles existentes
+    for (const detail of existingDetails) {
+      await models.ProductionOrderDetail.update(
+        { idProduct: detail.idProduct, amount: detail.amount, state: detail.state },
+        { where: { id: detail.id }, transaction }
+      );
+    }
+
+    // Crear nuevos detalles
+    if (newDetails.length > 0) {
+      const newDetailRecords = newDetails.map(detail => ({
+        idProductionOrder: id,
+        idProduct: detail.idProduct,
+        amount: detail.amount,
+        state: detail.state || 1,
+      }));
+      await models.ProductionOrderDetail.bulkCreate(newDetailRecords, { transaction });
+    }
+
+    // Si el estado cambia a "Terminado", actualizar el stock de los productos
+    if (isStatusChangingToFinished) {
+      for (const detail of existingOrder.productionOrderDetails) {
+        const { idProduct, amount } = detail;
+        await models.Product.update(
+          { stock: sequelize.literal(`stock + ${amount}`) },
+          { where: { id: idProduct }, transaction }
+        );
+      }
+    }
+
     // Confirmar la transacción
     await transaction.commit();
 
-    return { message: 'Orden actualizada correctamente y stock ajustado' };
+    return { success: true };
   } catch (error) {
-    // Hacer rollback en caso de error
-    await transaction.rollback();
-    throw new Error(`Error al actualizar la orden: ${error.message}`);
+    // Revertir la transacción en caso de error
+    if (!transaction.finished) {
+      await transaction.rollback();
+    }
+    console.error("Error al actualizar la orden de producción:", error);
+    return { success: false, error };
   }
 };
-*/
 
-const updateProductionOrder = async (id, data) => {
-  return await models.ProductionOrder.update(data, {
-      where: { id }
-  });
-};
+
+
+
 
 const deleteProductionOrder = async (id) => {
   return await models.ProductionOrder.destroy({

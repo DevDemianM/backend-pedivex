@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const SuppliesController = require('../controllers/SuppliesController');
+const SuppliesController = require('../controllers/suppliesController');
 const validateSupplies = require('../middlewares/validateSupplies');
 
 router.get('/', SuppliesController.getAllSupplies);
