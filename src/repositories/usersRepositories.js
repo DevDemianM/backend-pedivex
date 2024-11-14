@@ -1,52 +1,4 @@
 const { models } = require('../models');
-const generateToken = require('../utils/generateToken');
-
-
-const loginUser = async (data) => {
-  try {
-
-    const currentUser = await models.User.findAll({
-      where: {
-        mail: data.mail
-      }
-    });
-
-    const user = currentUser[0].dataValues;
-
-    console.log(data);
-    console.log(user);
-
-    if (!currentUser) {
-      return {msg: 'usuario_no_encontrado'};
-    }
-
-    if (
-      user.password == data.password &&
-      user.mail == data.mail
-    ) {
-      const token = await generateToken(currentUser.id);
-      return { state: 'true', token }, res.send({ msg: 'success', token });
-        ;
-    } else {
-      return { state: 'false', msg: 'credenciales incorrectas' };
-    }
-
-  } catch (error) {
-    return { state: 'false', error };
-  }
-};
-
-const findUserByEmail = async (email) => {
-  return await users.findOne({ where: { mail: email } });
-};
-
-const updateUserRecovery = async (user) => {
-  return await user.save();
-};
-
-const findUserByToken = async (token) => {
-  return await users.findOne({ where: { resetToken: token, tokenExpiration: { [Op.gt]: new Date() } } });
-};
 
 const getAllUsers = async () => {
   return await models.User.findAll({
@@ -111,12 +63,8 @@ const updateUserState = async (id, state) => {
 };
 
 module.exports = {
-  loginUser,
   getAllUsers,
   getUserById,
-  findUserByEmail,
-  updateUserRecovery,
-  findUserByToken,
   getAllClientUsers,
   getAllEmployeeUsers,
   createUser,

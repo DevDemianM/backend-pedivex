@@ -1,7 +1,7 @@
-const userRepositories = require('../repositories/usersRepositories');
+const authRepositories = require('../repositories/authRepositories');
 
 const loginUser = async (data) => {
-  return await userRepositories.loginUser(data);
+  return await authRepositories.loginUser(data);
 }
 
 module.exports = {
