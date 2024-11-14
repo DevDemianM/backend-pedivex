@@ -3,38 +3,33 @@ const generateToken = require('../utils/generateToken');
 
 
 const loginUser = async (data) => {
-  try {
-
-    const currentUser = await models.User.findAll({
-      where: {
-        mail: data.mail
-      }
-    });
-
-    const user = currentUser[0].dataValues;
-
-    console.log(data);
-    console.log(user);
-
-    if (!currentUser) {
-      return {msg: 'usuario_no_encontrado'};
+  const currentUser = await models.User.findAll({
+    where: {
+      mail: data.mail
     }
+  });
 
-    if (
-      user.password == data.password &&
-      user.mail == data.mail
-    ) {
-      const token = await generateToken(currentUser.id);
-      return { state: 'true', token }, res.send({ msg: 'success', token });
-        ;
-    } else {
-      return { state: 'false', msg: 'credenciales incorrectas' };
-    }
+  const user = currentUser[0].dataValues;
 
-  } catch (error) {
-    return { state: 'false', error };
+  console.log(data);
+  console.log(user);
+
+  if (!currentUser) {
+    return {msg: 'usuario_no_encontrado'};
+  }
+
+  if (
+    user.password == data.password &&
+    user.mail == data.mail
+  ) {
+    const token = await generateToken(currentUser.id);
+    return { state: 'true', token };
+    // res.send({ msg: 'success', token });
+  } else {
+    return { state: 'false', msg: 'credenciales incorrectas' };
   }
 };
+
 
 const findUserByEmail = async (email) => {
   return await users.findOne({ where: { mail: email } });
