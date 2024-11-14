@@ -5,6 +5,7 @@ const { syncDatabase } = require('./src/models');
 const cors = require('cors');
 
 //Import Rutas
+const dashboard = require('./src/routes/dashboard');
 const authRoutes = require('./src/routes/authRoutes');
 const boughtDetailRoutes = require('./src/routes/boughtDetailRoutes');
 const boughtRoutes = require('./src/routes/boughtRoutes');
@@ -37,6 +38,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+app.use('/dashboard', dashboard);
 app.use('/auth', authRoutes);
 app.use('/boughtDetail', boughtDetailRoutes);
 app.use('/bought', boughtRoutes);
