@@ -141,9 +141,48 @@ const updateBought = async (id, data) => {
 };
 
 const deleteBought = async (id) => {
-    return await models.Bought.destroy({
-        where: { id }
-    });
+    const transaction = await sequelize.transaction();
+    try{
+        let details = await models.BoughtDetail.findAll({
+            where: { idBought: id },
+            transaction
+        });
+
+        // Recorrer cada detalle de compra
+        for (let detail of details) {
+            const { supplieName, amount } = detail;
+
+            // Buscar el suministro correspondiente
+            let supply = await models.Supply.findOne({
+                where: sequelize.where(
+                    sequelize.fn('LOWER', sequelize.col('name')),
+                    Op.eq,
+                    supplieName.toLowerCase()
+                ),
+                transaction
+            });
+
+            // Actualizar el stock si el suministro existe
+            if (supply) {
+                let cantidad = parseInt(amount);
+                supply.stock -= cantidad;
+                await supply.save({ transaction });
+            }
+        }
+
+        const bought = await models.Bought.destroy({
+            where: { id }
+        }, { transaction });
+
+        await transaction.commit();
+
+        return { success: true, bought };
+    } catch (error) {
+        // Revertir la transacción en caso de error
+        await transaction.rollback();
+        console.error('Error al eliminar la compra:', error);
+        return { success: false, error };
+    }
 };
 
 const boughtDetailSchema = Joi.object({
