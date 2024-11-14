@@ -1,6 +1,7 @@
 const sequelize = require('../config/database');
 const { models } = require('../models');
 const Joi = require('joi');
+const { Op } = require('sequelize');
 
 const getAllBoughts = async () => {
     return await models.Bought.findAll({
@@ -82,6 +83,36 @@ const createBought = async (data) => {
             return { success: false, errors: validationErrors };
         }
 
+        // Procesa cada detalle de la compra y verifica los insumos
+        for (const detail of details) {
+            const { supplieName, amount, unit } = detail;
+
+            // Verifica si el insumo ya existe
+            let supply = await models.Supply.findOne({
+                where: sequelize.where(
+                    sequelize.fn('LOWER', sequelize.col('name')),
+                    Op.eq,
+                    supplieName.toLowerCase()
+                ),
+                transaction
+            });
+
+            if (supply) {
+                // Si existe, actualiza el stock
+                let cantidad = parseInt(amount)
+                supply.stock += cantidad;
+                await supply.save({ transaction });
+            } else {
+                // Si no existe, crea un nuevo insumo
+                await models.Supply.create({
+                    name: supplieName,
+                    stock: amount,
+                    unit: unit,
+                    state: 1 // Puedes cambiar este estado según tus necesidades
+                }, { transaction });
+            }
+        }
+
         // Crea los detalles de la compra
         const boughtDetails = details.map(detail => ({
             ...detail,
@@ -110,9 +141,48 @@ const updateBought = async (id, data) => {
 };
 
 const deleteBought = async (id) => {
-    return await models.Bought.destroy({
-        where: { id }
-    });
+    const transaction = await sequelize.transaction();
+    try{
+        let details = await models.BoughtDetail.findAll({
+            where: { idBought: id },
+            transaction
+        });
+
+        // Recorrer cada detalle de compra
+        for (let detail of details) {
+            const { supplieName, amount } = detail;
+
+            // Buscar el suministro correspondiente
+            let supply = await models.Supply.findOne({
+                where: sequelize.where(
+                    sequelize.fn('LOWER', sequelize.col('name')),
+                    Op.eq,
+                    supplieName.toLowerCase()
+                ),
+                transaction
+            });
+
+            // Actualizar el stock si el suministro existe
+            if (supply) {
+                let cantidad = parseInt(amount);
+                supply.stock -= cantidad;
+                await supply.save({ transaction });
+            }
+        }
+
+        const bought = await models.Bought.destroy({
+            where: { id }
+        }, { transaction });
+
+        await transaction.commit();
+
+        return { success: true, bought };
+    } catch (error) {
+        // Revertir la transacción en caso de error
+        await transaction.rollback();
+        console.error('Error al eliminar la compra:', error);
+        return { success: false, error };
+    }
 };
 
 const boughtDetailSchema = Joi.object({
@@ -129,12 +199,7 @@ const boughtDetailSchema = Joi.object({
         'string.valid': 'Unit must be one of the following: gr, lb, ml, unit',
         'any.required': 'Unit is required'
     }),
-    costUnit: Joi.number().min(0).required().messages({
-        'number.base': 'CostUnit must be a number',
-        'number.min': 'CostUnit must be a non-negative number',
-        'any.required': 'CostUnit is required'
-    }),
-    subtotal: Joi.number().min(0).required().messages({
+    cost: Joi.number().min(0).required().messages({
         'number.base': 'Subtotal must be a number',
         'number.min': 'Subtotal must be a non-negative number',
         'any.required': 'Subtotal is required'

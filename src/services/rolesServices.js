@@ -20,10 +20,15 @@ const deleteRole = async (id) => {
     return await rolesRepository.deleteRole(id);
 };
 
+const updateRoleState = async (id, state) => {
+    return await rolesRepository.updateRoleState(id, state);
+  };
+
 module.exports = {
     getAllRoles,
     getRoleById,
     createRole,
     updateRole,
-    deleteRole
+    deleteRole,
+    updateRoleState
 };

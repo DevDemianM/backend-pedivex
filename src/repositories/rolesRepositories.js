@@ -35,10 +35,30 @@ const deleteRole = async (id) => {
     });
 };
 
+const updateRoleState = async (id, state) => {
+    // Primero obtenemos el rol actual por su ID
+    const role = await models.Role.findByPk(id);
+
+    if (!role) {
+        throw new Error('Role not found');
+    }
+
+    // Verificamos si el nombre del rol es "administrador", independientemente de mayúsculas o minúsculas
+    if (role.role.toLowerCase() === 'administrador') {
+        throw new Error('The role "administrador" cannot be edited');
+    }
+
+    // Si no es "administrador", se procede a la actualización
+    return await models.Role.update({ state }, {
+        where: { id }
+    });
+  };
+
 module.exports = {
     getAllRoles,
     getRoleById,
     createRole,
     updateRole,
-    deleteRole
+    deleteRole,
+    updateRoleState
 };

@@ -47,3 +47,8 @@ generateToken(123).then(token => {
 }).catch(err => {
   console.error('Error al generar el token:', err.message);
 });
+
+module.exports = {
+  generateToken,
+  verifyToken
+}

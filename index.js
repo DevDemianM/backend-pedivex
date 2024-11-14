@@ -73,7 +73,6 @@ const startServer = async () => {
     await syncDatabase(); // Sincroniza la base de datos
     app.listen(port, () => {
       console.log(`Server is running on port: ${port}`);
-      console.log(`jp gay`)
     });
   } catch (error) {
     console.error('Error starting the server:', error);

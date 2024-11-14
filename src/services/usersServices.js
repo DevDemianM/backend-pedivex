@@ -46,7 +46,7 @@ const generateResetToken = () => {
 
 const sendResetEmail = async (email, token) => {
   const transporter = nodemailer.createTransport({
-    service: 'gmail', // Cambia según tu necesidad
+    service: 'gmail', 
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -57,7 +57,7 @@ const sendResetEmail = async (email, token) => {
     from: process.env.EMAIL_USER,
     to: email,
     subject: 'Password Reset',
-    text: `You requested a password reset. Click the link to reset your password: http://localhost:3000/reset-password/${token}`,
+    text: `You requested a password reset. Click the link to reset your password: http://localhost:3000/resetPassword/${token}`,
   };
 
   await transporter.sendMail(mailOptions);
