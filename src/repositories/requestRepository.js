@@ -1,5 +1,7 @@
 const sequelize = require('../config/database');
 const { models } = require('../models');
+const { createSale } = require('./saleRepository'); // Ajusta la ruta si es necesario
+
 
 const getAllRequests = async () => {
     return await models.Request.findAll({
@@ -75,88 +77,75 @@ const createRequest = async (data) => {
     }
 };
   
-
 const updateRequest = async (id, data) => {
   const transaction = await sequelize.transaction();
   try {
-    // Obtener el pedido existente y sus detalles
-    const existingRequest = await models.Request.findByPk(id, {
-      include: [{ model: models.RequestDetail, as: 'requestDetails' }],
+    const { creationDate, idUser, state, deadLine, stateDate, requestDetails } = data;
+
+    // Obtener los precios actuales de los productos involucrados en los detalles
+    const productIds = requestDetails.map(detail => detail.idProduct);
+    const products = await models.Product.findAll({
+      where: { id: productIds },
       transaction
     });
 
-    if (!existingRequest) {
-      throw new Error('Pedido no encontrado');
-    }
+    // Recalcular el total
+    let total = 0;
+    const updatedDetails = requestDetails.map(detail => {
+      const product = products.find(prod => prod.id === detail.idProduct);
+      const price = product ? parseFloat(product.price) : 0;
+      const subtotal = price * detail.quantity;
+      total += subtotal;
+      return { ...detail, subtotal, total: subtotal };
+    });
 
-    // Actualizar los campos del pedido principal
+    // Actualizar los datos del pedido
     await models.Request.update(
-      {
-        idUser: data.idUser,
-        total: data.total,
-        state: data.state,
-        creationDate: data.creationDate,
-        deadLine: data.deadLine,
-        stateDate: data.stateDate,
-      },
+      { creationDate, idUser, total, state, deadLine, stateDate },
       { where: { id }, transaction }
     );
 
-    // Separar detalles existentes de los nuevos detalles
-    const existingDetails = data.requestDetails.filter(detail => detail.id);
-    const newDetails = data.requestDetails.filter(detail => !detail.id);
-
-    // Obtener los IDs de los detalles enviados en la solicitud
-    const updatedDetailIds = existingDetails.map(detail => detail.id);
-
-    // Eliminar detalles que existen en la base de datos pero no en la solicitud
-    const detailsToDelete = existingRequest.requestDetails.filter(
-      dbDetail => !updatedDetailIds.includes(dbDetail.id)
-    );
-
-    for (const detail of detailsToDelete) {
-      await models.RequestDetail.destroy({
-        where: { id: detail.id },
-        transaction
-      });
-    }
-
-    // Actualizar detalles existentes
+    // Actualizar y crear detalles
+    const existingDetails = updatedDetails.filter(detail => detail.id);
+    const newDetails = updatedDetails.filter(detail => !detail.id);
     for (const detail of existingDetails) {
       await models.RequestDetail.update(
-        {
-          idProduct: detail.idProduct,
-          quantity: detail.quantity,
-          price: detail.price,
-          subtotal: detail.subtotal,
-        },
+        { idProduct: detail.idProduct, quantity: detail.quantity, price: detail.price, subtotal: detail.subtotal, total: detail.total },
         { where: { id: detail.id }, transaction }
       );
     }
-
-    // Crear nuevos detalles
     if (newDetails.length > 0) {
       const newDetailRecords = newDetails.map(detail => ({
-        idRequest: id,
-        idProduct: detail.idProduct,
-        quantity: detail.quantity,
-        price: detail.price,
-        subtotal: detail.subtotal,
+        idRequest: id, idProduct: detail.idProduct, quantity: detail.quantity, price: detail.price, subtotal: detail.subtotal, total: detail.total
       }));
       await models.RequestDetail.bulkCreate(newDetailRecords, { transaction });
+    }
+
+    // Crear venta si el estado es "Terminado"
+    if (state === 7) {
+      const saleData = {
+        deliveryDate: new Date(),
+        total: total,
+        state: 7,
+        idUser: idUser,
+        details: updatedDetails.map(detail => ({
+          idProduct: detail.idProduct,
+          amount: detail.quantity
+        }))
+      };
+      await createSale(saleData); // Llama a la función para crear la venta
     }
 
     // Confirmar la transacción
     await transaction.commit();
     return { success: true, message: "Pedido actualizado correctamente" };
   } catch (error) {
-    // Si hay un error, revertir la transacción
-    if (!transaction.finished) {
-      await transaction.rollback();
-    }
+    if (!transaction.finished) await transaction.rollback();
     throw new Error("Error al actualizar el pedido: " + error.message);
   }
 };
+
+
 
 
 

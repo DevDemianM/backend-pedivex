@@ -55,11 +55,25 @@ const deleteRole = async (req, res) => {
     }
 };
 
+const updateRoleState = async (req, res) => {
+    try {
+      const { state } = req.body;
+      const updated = await roleService.updateRoleState(req.params.id, state);
+      if (updated[0] === 0) {
+        return sendError(res, 'role not found', 404);
+      }
+      sendResponse(res, 'role state updated successfully');
+    } catch (error) {
+      sendError(res, error);
+    }
+  };
+
 module.exports = {
     getAllRoles,
     getRoleById,
     createRole,
     updateRole,
-    deleteRole
+    deleteRole,
+    updateRoleState
 };
 

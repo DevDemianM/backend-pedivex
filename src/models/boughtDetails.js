@@ -29,11 +29,7 @@ const boughtDetails = sequelize.define('boughtDetails', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  costUnit: {
-    type: DataTypes.DECIMAL,
-    allowNull: false
-  },
-  subtotal: {
+  cost: {
     type: DataTypes.DECIMAL,
     allowNull: false
   },
