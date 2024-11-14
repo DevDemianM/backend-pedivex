@@ -3,15 +3,15 @@ const { sendResponse, sendError } = require('../utils/response');
 
 const topCinco = async (req, res) => {
     try {
-        const { mes } = req.body;
-        
-        // Validar que el mes esté entre 1 y 12
+        const { mes } = req.query; // Acceder a los parámetros de la URL (GET)
+
+        // Validación
         if (mes < 1 || mes > 12) {
-            return sendError(res, { message: "El mes debe estar entre 1 y 12" }, 400); // Bad Request
+            return sendError(res, { message: "El mes debe estar entre 1 y 12" }, 400);
         }
 
-        const top = await dashboard.topCinco(req.body);
-        sendResponse(res, top, 200); // 200 OK para consultas
+        const top = await dashboard.topCinco({ mes }); // Pasamos mes como parte de un objeto
+        sendResponse(res, top, 200); // 200 OK
     } catch (error) {
         sendError(res, error);
     }
@@ -19,15 +19,15 @@ const topCinco = async (req, res) => {
 
 const topAnual = async (req, res) => {
     try {
-        const { anio } = req.body;
-        
-        // Validar que el año sea un número positivo
+        const { anio } = req.query; // Acceder a los parámetros de la URL (GET)
+
+        // Validación
         if (isNaN(anio) || anio <= 0) {
-            return sendError(res, { message: "El año debe ser un número positivo" }, 400); // Bad Request
+            return sendError(res, { message: "El año debe ser un número positivo" }, 400);
         }
 
-        const top = await dashboard.topAnual(req.body);
-        sendResponse(res, top, 200); // 200 OK
+        const top = await dashboard.topAnual({ anio });
+        sendResponse(res, top, 200);
     } catch (error) {
         sendError(res, error);
     }
@@ -35,15 +35,15 @@ const topAnual = async (req, res) => {
 
 const ventasPorMes = async (req, res) => {
     try {
-        const { anio } = req.body;
+        const { anio } = req.query; // Acceder a los parámetros de la URL (GET)
 
-        // Validar que el año sea un número positivo
+        // Validación
         if (isNaN(anio) || anio <= 0) {
-            return sendError(res, { message: "El año debe ser un número positivo" }, 400); // Bad Request
+            return sendError(res, { message: "El año debe ser un número positivo" }, 400);
         }
 
-        const top = await dashboard.ventasPorMes(req.body);
-        sendResponse(res, top, 200); // 200 OK
+        const top = await dashboard.ventasPorMes({ anio });
+        sendResponse(res, top, 200);
     } catch (error) {
         sendError(res, error);
     }
