@@ -25,8 +25,8 @@ const loginUser = async (data) => {
       user.mail == data.mail
     ) {
       const token = await generateToken(currentUser.id);
-      return { state: 'true', token };
-      // res.send({ msg: 'success', token });
+      return { state: 'true', token }, res.send({ msg: 'success', token });
+        ;
     } else {
       return { state: 'false', msg: 'credenciales incorrectas' };
     }
