@@ -54,17 +54,7 @@ const users = sequelize.define('users', {
       model: roles,
       key: 'id'
     },
-  },
-
-  resetToken: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  tokenExpiration: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  
+  }
 }, {
   tableName: 'users',
   timestamps: false
