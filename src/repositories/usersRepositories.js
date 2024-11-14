@@ -2,31 +2,62 @@ const { models } = require('../models');
 const generateToken = require('../utils/generateToken');
 
 
+// const loginUser = async (data) => {
+//   try {
+
+//     const currentUser = await models.User.findAll({
+//       where: {
+//         mail: data.mail
+//       }
+//     });
+
+//     const user = currentUser[0].dataValues;
+
+//     console.log(data);
+//     console.log(user);
+
+//     if (!currentUser) {
+//       return {msg: 'usuario_no_encontrado'};
+//     }
+
+//     if (
+//       user.password == data.password &&
+//       user.mail == data.mail
+//     ) {
+//       const token = await generateToken(currentUser.id);
+//       return { state: 'true', token }, res.send({ msg: 'success', token });
+//         ;
+//     } else {
+//       return { state: 'false', msg: 'credenciales incorrectas' };
+//     }
+
+//   } catch (error) {
+//     return { state: 'false', error };
+//   }
+// };
+
 const loginUser = async (data) => {
   const currentUser = await models.User.findAll({
     where: {
-      mail: data.mail
-    }
+      mail: data.mail,
+    },
   });
 
-  const user = currentUser[0].dataValues;
+  const user = currentUser[0]?.dataValues;
 
-  console.log(data);
-  console.log(user);
-
-  if (!currentUser) {
-    return {msg: 'usuario_no_encontrado'};
+  // Si no se encuentra el usuario, lanzamos un error
+  if (!user) {
+    throw new Error('usuario_no_encontrado');
   }
 
-  if (
-    user.password == data.password &&
-    user.mail == data.mail
-  ) {
-    const token = await generateToken(currentUser.id);
-    return { state: 'true', token };
-    // res.send({ msg: 'success', token });
+  // Validación de las credenciales
+  if (user.password === data.password && user.mail === data.mail) {
+    // Si las credenciales son correctas, generamos y devolvemos el token
+    const token = await generateToken(user.id);
+    return { state: 'true', token }; // Devuelve el token en una respuesta positiva
   } else {
-    return { state: 'false', msg: 'credenciales incorrectas' };
+    // Si las credenciales son incorrectas
+    throw new Error('credenciales_incorrectas');
   }
 };
 
