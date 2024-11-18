@@ -1,5 +1,30 @@
 const { models } = require('../models');
 
+const findByMail = async (mail) => {
+  return await users.findOne({where : mail});
+};
+
+const updateRecoveryToken = async (id, token, expires) => {
+  return await users.update(
+    {recoveryToken: token, recoveryTokenExpires:expires},
+    {where: {id}}
+  );
+};
+
+const updatePassword =async (mail, hashedPassword) => {
+  return await users.update(
+    {password: hashedPassword},
+    {where:{mail}}
+  );
+};
+
+const clearRecoveryToken =async (mail) => {
+  return await users.update(
+    {recoveryToken:null, recoveryTokenExpires: null},
+    {where:{mail}}
+  );
+};
+
 const getAllUsers = async () => {
   return await models.User.findAll({
     include: [models.Role]
@@ -70,5 +95,9 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
-  updateUserState
+  updateUserState,
+  findByMail,
+  updateRecoveryToken,
+  updatePassword,
+  clearRecoveryToken
 };

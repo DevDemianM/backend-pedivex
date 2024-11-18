@@ -20,6 +20,16 @@ const users = sequelize.define('users', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  recoveryToken: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+
+  recoveryTokenExpires:{
+    type:DataTypes.DATE,
+    allowNull:true,
+  },
+  
   firstName: {
     type: DataTypes.STRING,
     allowNull: false,
