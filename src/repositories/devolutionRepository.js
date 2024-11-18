@@ -85,23 +85,88 @@ const createDevolution = async (data) => {
     // Crear detalles de devolución
     await models.DevolutionDetails.bulkCreate(details, { transaction });
 
-    // Actualizar el stock de los productos
+    // Procesar cada detalle de la devolución
     for (const detail of devolutionDetails) {
-      const { idProduct, quantity, changedProduct, changedQuantity } = detail;
+      const { idProduct, quantity, changedProduct, changedQuantity, idMotive } = detail;
 
-      // Actualizar stock del producto devuelto
-      await models.Product.update(
-        { stock: sequelize.literal(`stock + ${quantity}`) },
-        { where: { id: idProduct }, transaction }
-      );
+      // Caso de cambio de sabor (Motivo 1)
+      if (idMotive === 1) {
+        // Actualizar stock del producto devuelto
+        await models.Product.update(
+          { stock: sequelize.literal(`stock + ${quantity}`) },
+          { where: { id: idProduct }, transaction }
+        );
 
-      // Actualizar stock del producto cambiado
-      await models.Product.update(
-        { stock: sequelize.literal(`stock - ${changedQuantity}`) },
-        { where: { id: changedProduct }, transaction }
-      );
+        // Actualizar stock del producto cambiado
+        await models.Product.update(
+          { stock: sequelize.literal(`stock - ${changedQuantity}`) },
+          { where: { id: changedProduct }, transaction }
+        );
+      }
+
+      // Caso de devolución por cambio de sabor (Motivo 2) - Sin afectar stock
+      if (idMotive === 2) {
+        // Solo registrar la devolución, no afecta el stock
+        // No se realiza ninguna actualización de stock en este caso.
+      }
+
+      // Caso de devolución por producto en mal estado (Motivo 3)
+      if (idMotive === 3) {
+        // Verificar si la fecha de vencimiento es válida
+        const product = await models.Product.findOne({
+          where: { id: idProduct },
+          transaction
+        });
+      
+        const expirationDate = new Date(product.expirationDate);
+        const currentDate = new Date();
+      
+        // Verificar si la fecha de vencimiento es vigente
+        if (expirationDate > currentDate) {
+          // Solo disminuir el stock del producto cambiado
+          await models.Product.update(
+            { stock: sequelize.literal(`stock - ${changedQuantity}`) },
+            { where: { id: changedProduct }, transaction }
+          );
+        } else {
+          // Si la fecha no es vigente, no hacer nada con el stock
+          // Solo se registra la devolución sin afectar el stock
+        }
+      }
+      
+
+      // Caso de devolución por producto vencido (Motivo 4)
+      if (idMotive === 4) {
+        // Verificar si la fecha de vencimiento está dentro de las últimas 24 horas
+        const product = await models.Product.findOne({
+          where: { id: idProduct },
+          transaction
+        });
+
+        const expirationDate = new Date(product.expirationDate);
+        const currentDate = new Date();
+
+        // Calcular la diferencia en horas entre la fecha de vencimiento y la fecha actual
+        const diffInHours = (currentDate - expirationDate) / (1000 * 60 * 60);
+
+        // Verificar si el producto tiene 24 horas o menos de vencido
+        if (diffInHours <= 24) {
+          // Realizar la devolución y disminuir el stock del producto cambiado
+          await models.Product.update(
+            { stock: sequelize.literal(`stock - ${changedQuantity}`) },
+            { where: { id: changedProduct }, transaction }
+          );
+        }
+      }
+
+      // Caso de devolución por paquete roto (Motivo 5) - Sin afectar stock
+      if (idMotive === 5) {
+        // Solo registrar la devolución, no afecta el stock
+        // No se realiza ninguna actualización de stock en este caso.
+      }
     }
 
+    // Finalizar la transacción
     await transaction.commit();
 
     return { success: true, devolution };
@@ -110,6 +175,7 @@ const createDevolution = async (data) => {
     return { success: false, error };
   }
 };
+
 
 
 module.exports = {
