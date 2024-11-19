@@ -8,13 +8,19 @@ const loginUser = async (data) => {
     }
   });
 
+  const currentRole = await models.Role.findOne({
+    where: {
+      id: currentUser.idRole
+    }
+  })
+
   if (!currentUser) {
     return { msg: 'User not found' };
   }
   
   if (currentUser.password == data.password) {
     const token = await generateToken(currentUser.id);
-    return { state: 'true', token };  
+    return { state: 'true', token, user: currentUser, role: currentRole };  
   } else {
     return { state: 'false', msg: 'credenciales incorrectas' };
   }
