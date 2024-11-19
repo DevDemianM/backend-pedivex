@@ -13,23 +13,32 @@ const requestPasswordRecovery = async (mail) => {
 
   await usersRepository.updateRecoveryToken(user.id, token, expiration);
 
-  const transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-      user: process.env.MAIL,
-      pass: process.env.MAIL_PASSWORD,
-    },
-  });
+  try {
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: true,
+      service: "gmail",
+      auth: {
+        user: process.env.USER_MAIL,
+        pass: process.env.USER_PASS,
+      },
+    });
 
-  await transporter.sendMail({
-    from: process.env.MAIL,
-    to: mail,
-    subject: 'Recuperación de contraseña',
-    html: `<p>Tu código de recuperación es: <strong>${token}</strong></p>
-    <p>Este código expira en 15 minutos.</p>`,
-  });
+    const info = await transporter.sendMail({
+      from: process.env.USER_MAIL,
+      to: `${mail}`,
+      subject: 'Recuperación de contraseña',
+      html: `<p>Tu código de recuperación es: <strong>${token}</strong></p>
+      <p>Este código expira en 15 minutos.</p>`,
+    });
 
-  return 'Correo enviado con éxito';
+    console.log('Correo enviado:', info.messageId);
+    return { msg: 'Correo enviado correctamente', info, status: 200 };
+  } catch (error) {
+    console.error('Error enviando correo:', error);
+    return { msg: 'No se pudo enviar el correo', error, status: 201 };
+  }
 };
 
 const validateToken = async (mail, token) => {
