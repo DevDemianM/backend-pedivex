@@ -20,16 +20,6 @@ const loginUser = async (data) => {
   }
 };
 
-const recoveryPass = async () => {
-  return;
-}
-
-const resetPass = async () => {
-  return;
-}
-
 module.exports = {
-  loginUser,
-  resetPass,
-  recoveryPass
+  loginUser
 };

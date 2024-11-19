@@ -4,7 +4,6 @@ const dotenv = require('dotenv');
 const { syncDatabase } = require('./src/models');
 const cors = require('cors');
 
-
 //Import Rutas
 const dashboard = require('./src/routes/dashboard');
 const authRoutes = require('./src/routes/authRoutes');
@@ -31,7 +30,6 @@ const clientsRoutes = require('./src/routes/clientsRoutes');
 const employeesRoutes = require('./src/routes/employeeRoutes');
 const statesRoutes = require('./src/routes/statesRoutes');
 const recoveryRoutes = require('./src/routes/recoveryRoutes');
-
 
 dotenv.config();
 
@@ -64,7 +62,6 @@ app.use('/devolution', devolutionRoutes);
 app.use('/motivedevolution', motiveDevolutionRoutes);
 app.use('/states', statesRoutes);
 app.use('/recovery',recoveryRoutes);
-
 
 app.use('/', (req, res) => {
   res.status(200).json('API de Pedivex');
