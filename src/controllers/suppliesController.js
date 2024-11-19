@@ -43,6 +43,18 @@ const updateSupplies = async (req, res) => {
     }
 };
 
+const updateSuppliesStock = async (req, res) => {
+    try {
+        const updated = await suppliesService.updateSuppliesStock(req.params.id, req.body);
+        if (updated[0] === 0) {
+            return sendError(res, 'Supplies not found', 404);
+        }
+        sendResponse(res, 'Supplies updated successfully');
+    } catch (error) {
+        sendError(res, error);
+    }
+};
+
 const deleteSupplies = async (req, res) => {
     try {
         const deleted = await suppliesService.deleteSupplies(req.params.id);
@@ -60,5 +72,6 @@ module.exports = {
     getSuppliesById,
     createSupplies,
     updateSupplies,
-    deleteSupplies
+    deleteSupplies,
+    updateSuppliesStock
 };

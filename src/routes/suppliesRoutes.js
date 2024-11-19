@@ -8,5 +8,6 @@ router.get('/:id', SuppliesController.getSuppliesById);
 router.post('/', validateSupplies, SuppliesController.createSupplies);
 router.put('/:id', SuppliesController.updateSupplies);
 router.delete('/:id', SuppliesController.deleteSupplies);
+router.patch('/:id', SuppliesController.updateSuppliesStock);
 
 module.exports = router;

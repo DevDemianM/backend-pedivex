@@ -16,6 +16,10 @@ const updateSupplies = async (id, data) => {
     return await SuppliesRepository.updateSupplies(id, data);
 };
 
+const updateSuppliesStock = async (id, data) => {
+    return await SuppliesRepository.updateSuppliesStock(id, data);
+};
+
 const deleteSupplies = async (id) => {
     return await SuppliesRepository.deleteSupplies(id);
 };
@@ -25,6 +29,7 @@ module.exports = {
     getSuppliesById,
     createSupplies,
     updateSupplies,
-    deleteSupplies
+    deleteSupplies,
+    updateSuppliesStock
 };
 

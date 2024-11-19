@@ -33,6 +33,12 @@ const updateSupplies = async (id, data) => {
     });
 };
 
+const updateSuppliesStock = async (id, stock) => {
+    return await models.User.update({ stock }, {
+        where: { id }
+      });
+};
+
 const deleteSupplies = async (id) => {
     return await models.Supply.destroy({
         where: { id }
@@ -44,6 +50,7 @@ module.exports = {
     getSuppliesById,
     createSupplies,
     updateSupplies,
-    deleteSupplies
+    deleteSupplies,
+    updateSuppliesStock
 };
 
