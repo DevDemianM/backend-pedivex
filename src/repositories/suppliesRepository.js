@@ -34,7 +34,7 @@ const updateSupplies = async (id, data) => {
 };
 
 const updateSuppliesStock = async (id, stock) => {
-    return await models.User.update({ stock }, {
+    return await models.Supply.update({ stock }, {
         where: { id }
       });
 };

@@ -45,7 +45,8 @@ const updateSupplies = async (req, res) => {
 
 const updateSuppliesStock = async (req, res) => {
     try {
-        const updated = await suppliesService.updateSuppliesStock(req.params.id, req.body);
+        const { stock } = req.body;
+        const updated = await suppliesService.updateSuppliesStock(req.params.id, stock);
         if (updated[0] === 0) {
             return sendError(res, 'Supplies not found', 404);
         }

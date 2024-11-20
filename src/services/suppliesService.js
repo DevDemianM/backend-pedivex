@@ -16,8 +16,8 @@ const updateSupplies = async (id, data) => {
     return await SuppliesRepository.updateSupplies(id, data);
 };
 
-const updateSuppliesStock = async (id, data) => {
-    return await SuppliesRepository.updateSuppliesStock(id, data);
+const updateSuppliesStock = async (id, stock) => {
+    return await SuppliesRepository.updateSuppliesStock(id, stock);
 };
 
 const deleteSupplies = async (id) => {
