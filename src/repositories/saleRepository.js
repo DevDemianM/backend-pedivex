@@ -39,37 +39,36 @@ const getSaleById = async (id) => {
   });
 };
 
-const createSale = async (data) => {
-  const transaction = await sequelize.transaction();
+const createSale = async (data, transaction) => {
   try {
     const { deliveryDate, total, state, idUser, details } = data;
 
-    // Crea la venta
-    const sale = await models.Sale.create({
-      deliveryDate,
-      total,
-      state,
-      idUser
-    }, { transaction });
+    // Crear la venta
+    const sale = await models.Sale.create(
+      {
+        deliveryDate,
+        total,
+        state,
+        idUser,
+      },
+      { transaction }
+    );
 
-    // Crea los detalles de la venta
-    const saleDetails = details.map(detail => ({
-      ...detail,
-      idSale: sale.id
+    // Crear los detalles de la venta
+    const saleDetails = details.map((detail) => ({
+      idSale: sale.id,
+      idProduct: detail.idProduct,
+      amount: detail.amount,
     }));
+
     await models.SaleDetail.bulkCreate(saleDetails, { transaction });
 
-    // Confirma la transacción
-    await transaction.commit();
-
+    // No confirmamos ni revertimos la transacción aquí, se maneja externamente
     return { success: true, sale };
   } catch (error) {
-    // Revertir la transacción en caso de error
-    if (!transaction.finished) {
-      await transaction.rollback();
-    }
-    console.error('Error al crear venta y detalles:', error);
-    return { success: false, error };
+    console.error("Error al crear venta y detalles:", error);
+    // Lanzamos el error para que sea manejado por la función que llama
+    throw error;
   }
 };
 
