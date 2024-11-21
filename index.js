@@ -1,8 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-const { syncDatabase } = require('./src/models');
 const cors = require('cors');
+const { syncDatabase } = require('./src/models');
+const fs = require('fs');
+const path = require('path');
+
+dotenv.config();
 
 //Import Rutas
 const dashboard = require('./src/routes/dashboard');
@@ -31,11 +35,17 @@ const employeesRoutes = require('./src/routes/employeeRoutes');
 const statesRoutes = require('./src/routes/statesRoutes');
 const recoveryRoutes = require('./src/routes/recoveryRoutes');
 
-dotenv.config();
+const uploadDir = path.join(__dirname, 'uploads/');
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads/')));
 
 app.use('/dashboard', dashboard);
 app.use('/auth', authRoutes);
