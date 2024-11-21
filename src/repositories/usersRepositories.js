@@ -1,27 +1,31 @@
 const { models } = require('../models');
+const bcrypt = require('bcrypt');
 
 const findByMail = async (mail) => {
-  return await users.findOne({where : mail});
+  return await models.User.findOne({ where: { mail } });
 };
 
 const updateRecoveryToken = async (id, token, expires) => {
-  return await users.update(
-    {recoveryToken: token, recoveryTokenExpires:expires},
-    {where: {id}}
+  return await models.User.update(
+    { recoveryToken: token, recoveryTokenExpires: expires },
+    { where: { id } }
   );
 };
 
-const updatePassword =async (mail, hashedPassword) => {
-  return await users.update(
-    {password: hashedPassword},
-    {where:{mail}}
+const updatePassword = async (mail, hashedPassword) => {
+  const salt = await bcrypt.genSalt(10);
+  const encryptedPassword = await bcrypt.hash(hashedPassword, salt);
+
+  return await models.User.update(
+    { password: encryptedPassword },
+    { where: { mail } }
   );
 };
 
-const clearRecoveryToken =async (mail) => {
-  return await users.update(
-    {recoveryToken:null, recoveryTokenExpires: null},
-    {where:{mail}}
+const clearRecoveryToken = async (mail) => {
+  return await models.User.update(
+    { recoveryToken: null, recoveryTokenExpires: null },
+    { where: { mail } }
   );
 };
 
@@ -43,7 +47,7 @@ const getAllClientUsers = async () => {
       idRole: 2
     }
   });
-}
+};
 
 const getAllEmployeeUsers = async () => {
   return await models.User.findAll({
@@ -51,13 +55,19 @@ const getAllEmployeeUsers = async () => {
       idRole: 3
     }
   });
-}
+};
 
 const createUser = async (data) => {
+  const salt = await bcrypt.genSalt(10);
+  data.password = await bcrypt.hash(data.password, salt);
   return await models.User.create(data);
 };
 
 const updateUser = async (id, data) => {
+  if (data.password) {
+    const salt = await bcrypt.genSalt(10);
+    data.password = await bcrypt.hash(data.password, salt);
+  }
   return await models.User.update(data, {
     where: { id }
   });
