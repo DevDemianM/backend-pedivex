@@ -19,30 +19,14 @@ const getProductById = async (req, res) => {
   }
 }
 
-
 const createProduct = async (req, res) => {
   try {
-    const { file, body } = req;
-
-    if (!file) {
-      return res.status(400).json({ error: 'Image file is required' });
-    }
-
-    const imagePath = `/uploads/${file.filename}`;
-
-    const data = { ...body, image: imagePath };
-    const result = await productsServices.createProduct(data);
-
-    if (result.success) {
-      res.status(201).json({ message: 'Product created successfully', product: result.currentProduct });
-    } else {
-      res.status(400).json({ error: result.error });
-    }
-  } catch (error) {
-    console.error('Error creating product:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    const product = await productsServices.createProduct(req.body);
+    sendResponse(res, product);
+  } catch (err) {
+    sendError(res, err);
   }
-};
+}
 
 const updateProduct = async (req, res) => {
   try {
@@ -69,3 +53,29 @@ module.exports = {
   updateProduct,
   deleteProduct
 }
+
+
+
+// const createProduct = async (req, res) => {
+//   try {
+//     const { file, body } = req;
+
+//     if (!file) {
+//       return res.status(400).json({ error: 'Image file is required' });
+//     }
+
+//     const imagePath = `/uploads/${file.filename}`;
+
+//     const data = { ...body, image: imagePath };
+//     const result = await productsServices.createProduct(data);
+
+//     if (result.success) {
+//       res.status(201).json({ message: 'Product created successfully', product: result.currentProduct });
+//     } else {
+//       res.status(400).json({ error: result.error });
+//     }
+//   } catch (error) {
+//     console.error('Error creating product:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
