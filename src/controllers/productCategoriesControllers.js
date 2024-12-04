@@ -64,10 +64,21 @@ const deleteProductCategorie = async (req, res) => {
   }
 }
 
+const hasProducts = async (req, res) => {  
+  try {
+    const { id } = req.params;
+    const hasProductsBool = await productCategoriesServices.hasProducts(id);
+    res.json({ hasProducts: hasProductsBool.length > 0 })
+  } catch (err) {
+    sendError(res, err);
+  }
+}
+
 module.exports = {
   getAllProductCategories,
   getProductCategorieById,
   createProductCategorie,
   updateProductCategorie,
-  deleteProductCategorie
+  deleteProductCategorie,
+  hasProducts
 }

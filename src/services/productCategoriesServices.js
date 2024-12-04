@@ -20,10 +20,15 @@ const deleteProductCategorie = async (id) => {
   return await productCategoriesRespository.deleteProductCategory(id);
 }
 
+const hasProducts = async (idCategorie) => {
+  return await productCategoriesRespository.hasProducts(idCategorie);
+}
+
 module.exports = {
   getAllProductCategories,
   getProductCategorieById,
   createProductCategorie,
   updateProductCategorie,
-  deleteProductCategorie
+  deleteProductCategorie,
+  hasProducts
 }

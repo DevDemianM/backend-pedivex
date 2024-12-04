@@ -1,27 +1,32 @@
-const productCategories = require('../models/productCategories')
+const { models } = require('../models/')
 
 const findAllProductCategories = async () => {
-  return await productCategories.findAll();
+  return await models.ProductCategory.findAll();
 }
 
 const findProductCategoryById = async (id) => {
-  return await productCategories.findByPk(id);
+  return await models.ProductCategory.findByPk(id);
 }
 
 const createProductCategory = async (data) => {
-  return await productCategories.create(data);
+  return await models.ProductCategory.create(data);
 }
 
 const updateProductCategory = async (id, data) => {
-  const productCategorie = await productCategories.findByPk(id);
+  const productCategorie = await models.ProductCategory.findByPk(id);
   if (!productCategorie) return null;
   return productCategorie.update(data);
 }
 
 const deleteProductCategory = async (id) => {
-  const productCategorie = await productCategories.findByPk(id);
+  const productCategorie = await models.ProductCategory.findByPk(id);
   if (!productCategorie) return null;
   return productCategorie.destroy();
+}
+
+const hasProducts = async (idCategorie) => {
+  const products = await models.Product.findAll({ where: { idCategorie } });
+  return products;
 }
 
 module.exports = {
@@ -29,5 +34,6 @@ module.exports = {
   findProductCategoryById,
   createProductCategory,
   updateProductCategory,
-  deleteProductCategory
+  deleteProductCategory,
+  hasProducts
 }

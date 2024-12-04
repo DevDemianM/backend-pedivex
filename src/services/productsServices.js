@@ -16,8 +16,8 @@ const updateProduct = async (id, data) => {
   return await productsRepository.updateProduct(id, data);
 }
 
-const deleteProduct = async (id) => {
-  return await productsRepository.deleteProduct(id);
+const stateValidation = async (id) => {
+  return await productsRepository.stateValidation(id);
 }
 
 module.exports = {
@@ -25,5 +25,5 @@ module.exports = {
   getProductById,
   createProduct,
   updateProduct,
-  deleteProduct
+  stateValidation
 }

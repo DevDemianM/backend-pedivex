@@ -195,9 +195,37 @@ const updateProduct = async (id, data) => {
   }
 };
 
+const stateValidation = async (id) => {  
+  const currentProduct = await models.Product.findByPk(id);
+  const productStock = currentProduct.dataValues.stock;
+  const productState = currentProduct.dataValues.state;
+
+  // validar stock y estado del producto
+  try {
+    if (productStock > 30) {
+      if (productState != 10) {
+        await models.Product.update({ state: 10 }, {where: id})
+      }
+    } else if (productStock < 30) {
+      if (productState != 11) {
+        await models.Product.update({ state: 11 }, {where: id})
+      }
+    } else if (productStock == 0) {
+      if (productState != 5) {
+        await models.Product.update({ state: 5 }, {where: id})
+      }
+    }
+    const updatedProduct = await findProductById(id);
+    return { success: true, updatedProduct }
+  } catch (error) {
+    return { success: false, error }
+  }
+}
+
 module.exports = {
   findAllProducts,
   findProductById,
   createProduct,
-  updateProduct
+  updateProduct,
+  stateValidation
 };
