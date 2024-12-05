@@ -7,6 +7,6 @@ router.get('/', productsController.getAllProducts);
 router.get('/:id', productsController.getProductById);
 router.post('/', /* upload.single('image'), */ productsController.createProduct);
 router.put('/:id', productsController.updateProduct);
-router.patch('/:id', productsController.stateValidation)
+router.patch('/:id', productsController.stateValidation);
 
 module.exports = router;
