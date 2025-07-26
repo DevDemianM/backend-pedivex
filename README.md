@@ -1,4 +1,4 @@
-# 🏭 CHAMIZO - Sistema de Gestión Empresarial
+# 🏭 Backend-Pedivex - Sistema de Gestión Empresarial
 
 [![Node.js](https://img.shields.io/badge/Node.js-18.x-green.svg)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.19.2-blue.svg)](https://expressjs.com/)
@@ -8,7 +8,7 @@
 
 ## 📋 Descripción
 
-**CHAMIZO** es un sistema de gestión empresarial completo desarrollado en Node.js que maneja inventarios, ventas, compras, producción, usuarios y más. El sistema está diseñado con una arquitectura robusta siguiendo patrones de diseño MVC y principios de Clean Architecture.
+**Backend-Pedivex** es un sistema de gestión empresarial completo desarrollado en Node.js que maneja inventarios, ventas, compras, producción, usuarios y más. El sistema está diseñado con una arquitectura robusta siguiendo patrones de diseño MVC y principios de Clean Architecture.
 
 ## 🚀 Características Principales
 
@@ -26,7 +26,7 @@
 ## 🏗️ Arquitectura del Proyecto
 
 ```
-CHAMIZO/
+Backend-Pedivex/
 ├── 📁 src/
 │   ├── 📁 config/          # Configuración de base de datos
 │   ├── 📁 controllers/      # Controladores (Lógica de negocio)
@@ -72,8 +72,8 @@ CHAMIZO/
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/tu-usuario/CHAMIZO.git
-   cd CHAMIZO
+   git clone https://github.com/DevDemianM/backend-pedivex.git
+   cd backend-pedivex
    ```
 
 2. **Instalar dependencias**
@@ -86,7 +86,7 @@ CHAMIZO/
    Crear archivo `.env` en la raíz del proyecto:
    ```env
    # Configuración de Base de Datos
-   DB_NAME=chamizo_db
+   DB_NAME=pedivex_db
    DB_USER=root
    DB_PASSWORD=tu_password
    DB_HOST=localhost
@@ -110,7 +110,7 @@ CHAMIZO/
 4. **Configurar la base de datos**
    ```bash
    # Crear la base de datos en MySQL
-   CREATE DATABASE chamizo_db;
+   CREATE DATABASE pedivex_db;
    
    # Sincronizar modelos (crear tablas)
    node sync.js
@@ -212,7 +212,7 @@ El sistema maneja relaciones complejas entre entidades:
 
 | Variable | Descripción | Valor por Defecto |
 |----------|-------------|-------------------|
-| `DB_NAME` | Nombre de la base de datos | `chamizo_db` |
+| `DB_NAME` | Nombre de la base de datos | `pedivex_db` |
 | `DB_USER` | Usuario de MySQL | `root` |
 | `DB_PASSWORD` | Contraseña de MySQL | - |
 | `DB_HOST` | Host de MySQL | `localhost` |
@@ -269,13 +269,13 @@ npm run test:watch
 npm install -g pm2
 
 # Iniciar aplicación con PM2
-pm2 start index.js --name "chamizo-api"
+pm2 start index.js --name "pedivex-api"
 
 # Ver logs
-pm2 logs chamizo-api
+pm2 logs pedivex-api
 
 # Reiniciar aplicación
-pm2 restart chamizo-api
+pm2 restart pedivex-api
 ```
 
 ### Docker (Opcional)
